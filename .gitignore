@@ -1,0 +1,11 @@
+.DS_Store
+.claude/
+**/.next/
+**/node_modules/
+**/.claude/
+drei/
+motion/
+project_3D_developer_portfolio/
+react-three-fiber/
+react-three-next/
+three.js/
