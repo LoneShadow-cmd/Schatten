@@ -1,0 +1,4836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCHATTEN — Business Architecture for $500K–$10M Founders</title>
+<meta name="description" content="Schatten engineers and installs AI-powered growth infrastructure for founders generating $500K–$10M. Funnels, automation, intelligence, positioning — rebuilt from the inside out.">
+
+<meta property="og:title" content="SCHATTEN — Precision Is the Strategy. Growth Is the Outcome.">
+<meta property="og:description" content="AI-powered growth infrastructure for serious operators. Not an agency. Not a consultant. The architecture beneath your next level.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://schatten.co">
+<meta property="og:image" content="https://schatten.co/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://schatten.co">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Schatten","url":"https://schatten.co","description":"Business Growth Partner specializing in AI-powered growth infrastructure for founders and operators.","serviceType":"Business Growth Partnership"}
+</script>
+
+<style>
+/* ════════════════════════════════════════════
+   DESIGN TOKENS
+════════════════════════════════════════════ */
+:root {
+  --ink:        #060606;
+  --ink-1:      #0c0c0c;
+  --ink-2:      #131313;
+  --ink-3:      #1c1c1c;
+  --chalk:      #f0eeea;
+  --chalk-dim:  #b8b4ac;
+  --chalk-mute: #6e6a64;
+  --chalk-sub:  #3c3836;
+  --gold:       #c4963a;
+  --gold-dim:   #7a5a1e;
+  --gold-pale:  #e4d0a0;
+  --gold-glow:  rgba(196,150,58,0.14);
+  --border:     rgba(240,238,234,0.065);
+  --border-hi:  rgba(240,238,234,0.12);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'DM Sans', system-ui, sans-serif;
+  --mono:  'DM Mono', 'Courier New', monospace;
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ════════════════════════════════════════════
+   RESET
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  background: var(--ink);
+  color: var(--chalk);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+
+/* ════════════════════════════════════════════
+   GRAIN TEXTURE
+════════════════════════════════════════════ */
+.grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.032;
+  pointer-events: none;
+  z-index: 9900;
+  animation: grain-move 0.35s steps(7) infinite;
+}
+@keyframes grain-move {
+  0%   { transform: translate(0,0); }
+  14%  { transform: translate(-3%,-5%); }
+  28%  { transform: translate(-7%,3%); }
+  42%  { transform: translate(3%,-6%); }
+  57%  { transform: translate(-2%,5%); }
+  71%  { transform: translate(-5%,1%); }
+  85%  { transform: translate(4%,-2%); }
+  100% { transform: translate(0,0); }
+}
+
+/* ════════════════════════════════════════════
+   PRELOADER
+════════════════════════════════════════════ */
+#preloader {
+  position: fixed;
+  inset: 0;
+  background: var(--ink);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+}
+.preloader-mark {
+  width: 64px;
+  height: 64px;
+}
+.preloader-path {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+}
+.preloader-wordmark {
+  display: flex;
+  gap: 0.04em;
+  overflow: hidden;
+}
+.preloader-char {
+  font-family: var(--serif);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.48em;
+  text-transform: uppercase;
+  color: var(--chalk-mute);
+  transform: translateY(20px);
+  opacity: 0;
+}
+.preloader-bar-wrap {
+  width: 160px;
+  height: 1px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.preloader-bar {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, var(--gold-dim), var(--gold));
+}
+
+/* ════════════════════════════════════════════
+   CUSTOM CURSOR
+════════════════════════════════════════════ */
+#cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 6px; height: 6px;
+  background: var(--chalk);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  mix-blend-mode: difference;
+  transition: width .25s var(--ease-out), height .25s var(--ease-out);
+}
+#cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(196,150,58,0.35);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9997;
+  transform: translate(-50%,-50%);
+  transition: width .5s var(--ease-out), height .5s var(--ease-out), border-color .3s ease;
+}
+.cursor-trail {
+  position: fixed;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  pointer-events: none;
+  z-index: 9996;
+  transform: translate(-50%,-50%);
+  opacity: 0;
+}
+body:has(a:hover) #cursor-ring,
+body:has(button:hover) #cursor-ring {
+  width: 60px; height: 60px;
+  border-color: rgba(196,150,58,0.65);
+}
+body:has(.btn-primary:hover) #cursor-dot { width: 10px; height: 10px; }
+
+/* ════════════════════════════════════════════
+   SCROLL PROGRESS
+════════════════════════════════════════════ */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 1px;
+  width: 0%;
+  background: linear-gradient(to right, var(--gold-dim), var(--gold));
+  z-index: 9800;
+}
+
+/* ════════════════════════════════════════════
+   TYPOGRAPHY
+════════════════════════════════════════════ */
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--chalk-mute);
+  display: block;
+  margin-bottom: 1.75rem;
+}
+.eyebrow-gold { color: var(--gold); opacity: 0.9; }
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  line-height: 1.06;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+h2.section-headline { font-size: clamp(2.4rem, 4.5vw, 4rem); hyphens: none; overflow-wrap: normal; word-break: normal; }
+h3 { font-size: clamp(1.4rem, 1.8vw, 1.85rem); }
+h4 { font-size: 1.3rem; }
+
+p {
+  font-size: 0.9375rem;
+  line-height: 1.88;
+  color: var(--chalk-mute);
+}
+p + p { margin-top: 1rem; }
+strong { color: var(--chalk); font-weight: 400; }
+em { font-style: italic; }
+
+/* Split text chars */
+.split-target .word { display: inline-block; overflow: hidden; vertical-align: bottom; }
+.split-target .char { display: inline-block; will-change: transform; }
+.split-target-word  { display: inline-block; overflow: hidden; }
+
+/* ════════════════════════════════════════════
+   LAYOUT
+════════════════════════════════════════════ */
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 4rem;
+}
+section { padding: 10rem 0; position: relative; }
+.section-intro { margin-bottom: 5.5rem; }
+
+/* ════════════════════════════════════════════
+   BUTTONS
+════════════════════════════════════════════ */
+.btn {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 1.15rem 2.8rem;
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+  transition: transform .35s var(--ease-out);
+  will-change: transform;
+}
+.btn-inner {
+  position: relative;
+  z-index: 1;
+  display: block;
+  transition: color .3s ease;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .45s var(--ease-in-out);
+}
+.btn:hover::before { transform: scaleX(1); }
+
+.btn-primary {
+  background: var(--chalk);
+  color: var(--ink);
+  border: none;
+}
+.btn-primary::before { background: var(--gold-pale); }
+.btn-primary:hover { transform: translateY(-2px); }
+
+.btn-gold {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+}
+.btn-gold::before { background: rgba(196,150,58,0.1); }
+.btn-gold:hover { transform: translateY(-2px); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--chalk);
+  border: 1px solid var(--border-hi);
+}
+.btn-outline::before { background: rgba(240,238,234,0.05); }
+.btn-outline:hover { border-color: var(--chalk-dim); transform: translateY(-2px); }
+
+.btn-ghost {
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--chalk-mute);
+  cursor: none;
+  transition: color .3s ease;
+  padding: 0;
+}
+.btn-ghost:hover { color: var(--chalk-dim); }
+
+/* Magnetic wrapper — JS controls transform */
+.btn-magnetic { display: inline-block; }
+
+/* ════════════════════════════════════════════
+   ORNAMENTS
+════════════════════════════════════════════ */
+.orn-line {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.orn-line::before, .orn-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+}
+.orn-line::before { background: linear-gradient(to right, transparent, var(--border)); }
+.orn-line::after  { background: linear-gradient(to left, transparent, var(--border)); }
+.orn-diamond {
+  width: 5px; height: 5px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════ */
+#nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 8000;
+  padding: 1.75rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(6,6,6,0.5);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  transition: padding .4s var(--ease-out), background .4s ease;
+}
+#nav.compact {
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+  background: rgba(6,6,6,0.92);
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--chalk);
+}
+.nav-links {
+  display: flex;
+  gap: 2.75rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--chalk-mute);
+  transition: color .3s ease;
+}
+.nav-links a:hover { color: var(--chalk); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.nav-urgency {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  opacity: 0.7;
+}
+.nav-cta {
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--chalk);
+  border: 1px solid var(--border-hi);
+  padding: 0.75rem 1.6rem;
+  transition: background .3s ease, border-color .3s ease, color .3s ease;
+}
+.nav-cta:hover { background: var(--chalk); color: var(--ink); border-color: var(--chalk); }
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: none;
+  padding: .5rem;
+  z-index: 8500;
+}
+.hamburger span {
+  display: block;
+  width: 22px; height: 1px;
+  background: var(--chalk);
+  transition: transform .4s var(--ease-out), opacity .3s ease;
+  transform-origin: center;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* Mobile overlay */
+#mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(6,6,6,0.97);
+  backdrop-filter: blur(24px);
+  z-index: 8100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .5s var(--ease-out);
+}
+#mobile-menu.open { opacity: 1; pointer-events: all; }
+#mobile-menu a {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 7vw, 3.8rem);
+  font-weight: 300;
+  color: var(--chalk);
+  letter-spacing: -0.01em;
+  transition: color .3s ease;
+}
+#mobile-menu a:hover { color: var(--chalk-dim); }
+.mobile-cta-link {
+  font-family: var(--sans) !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.28em !important;
+  text-transform: uppercase;
+  color: var(--gold) !important;
+  border: 1px solid var(--gold-dim) !important;
+  padding: .9rem 2.4rem;
+  margin-top: 1rem;
+}
+.mobile-urgency-note {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.6;
+  margin-top: -1rem;
+}
+
+/* ════════════════════════════════════════════
+   HERO
+════════════════════════════════════════════ */
+#hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+#shader-mount {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+#shader-mount canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0.22;
+  mix-blend-mode: screen;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 90% at 65% 40%, rgba(196,150,58,0.055) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 60% at 10% 80%, rgba(196,150,58,0.02) 0%, transparent 55%);
+  will-change: transform;
+}
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(240,238,234,0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240,238,234,0.016) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 80% 80% at 60% 40%, black 10%, transparent 70%);
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 0;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 10rem 4rem;
+  width: 100%;
+  position: relative;
+  z-index: 3;
+}
+.hero-left { padding-right: 0; }
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+  display: block;
+  margin-bottom: 2.25rem;
+}
+.hero-hl {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5.2rem);
+  font-weight: 300;
+  line-height: 1.03;
+  letter-spacing: -0.025em;
+  color: var(--chalk);
+  margin-bottom: 2.25rem;
+}
+.hero-hl em { color: var(--chalk-dim); font-style: italic; }
+.hero-qualifier {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--chalk-sub);
+  line-height: 1.7;
+  max-width: 40ch;
+  margin-bottom: 0.6rem;
+}
+.hero-hook {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--chalk-dim);
+  max-width: 38ch;
+  margin-bottom: 1.75rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--gold-dim);
+}
+.hero-body {
+  font-size: 0.9375rem;
+  line-height: 1.9;
+  color: var(--chalk-mute);
+  max-width: 44ch;
+  margin-bottom: 1rem;
+}
+.hero-scarcity {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--chalk-sub);
+  font-style: italic;
+  margin-bottom: 2.75rem;
+  display: block;
+}
+.hero-scarcity span { color: var(--gold); font-style: normal; }
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* ── Katana canvas (flowing animation — layer 2) ── */
+#katana-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  display: block;
+  background: transparent;
+}
+
+/* ── Katana quote overlay ── */
+.katana-quote-overlay {
+  position: absolute;
+  bottom: 2rem;
+  right: 4rem;
+  z-index: 3;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.7rem;
+  color: var(--chalk-sub);
+  letter-spacing: 0.04em;
+  line-height: 1.65;
+  pointer-events: none;
+}
+
+/* ── Stats strip ── */
+.stats-strip {
+  position: relative;
+  z-index: 3;
+  border-top: 1px solid var(--border);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 4rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.stat-item {
+  padding: 2.25rem 0;
+  border-right: 1px solid var(--border);
+  padding-left: 3rem;
+}
+.stat-item:first-child { padding-left: 0; }
+.stat-item:last-child  { border-right: none; }
+.stat-num {
+  font-family: var(--serif);
+  font-size: 2.4rem;
+  font-weight: 300;
+  color: var(--chalk);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.stat-prefix, .stat-suffix {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  color: var(--gold);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  display: block;
+}
+
+/* ════════════════════════════════════════════
+   PROBLEM SECTION
+════════════════════════════════════════════ */
+#problem { background: var(--ink-1); }
+.problem-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8rem;
+  align-items: start;
+}
+
+.problem-copy { max-width: none; margin: 2rem 0 3rem; }
+.problem-close {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--chalk);
+  border-left: 2px solid var(--gold);
+  padding-left: 2rem;
+  line-height: 1.6;
+}
+.pillars {
+  display: flex;
+  flex-direction: column;
+}
+.pillar {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1.25rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.pillar:first-child { border-top: 1px solid var(--border); }
+.pillar-n {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  opacity: 0.7;
+  padding-top: 0.1rem;
+}
+.pillar p { font-size: 0.875rem; max-width: none; line-height: 1.75; }
+
+/* ════════════════════════════════════════════
+   SOLUTION SECTION
+════════════════════════════════════════════ */
+.solution-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9rem;
+  align-items: start;
+}
+.solution-list {
+  list-style: none;
+  margin-top: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.solution-list li {
+  font-size: 0.875rem;
+  color: var(--chalk-mute);
+  padding: 1.1rem 0 1.1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  line-height: 1.75;
+  transition: color .3s ease, background .3s ease;
+}
+.solution-list li:first-child { border-top: 1px solid var(--border); }
+.solution-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  opacity: 0.6;
+}
+.solution-list li:hover { color: var(--chalk); }
+.solution-closer {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--chalk-dim);
+  margin-top: 2.5rem;
+  display: block;
+  line-height: 1.55;
+}
+
+/* ════════════════════════════════════════════
+   OFFER HORIZONTAL SCROLL
+════════════════════════════════════════════ */
+#offer {
+  background: var(--ink-1);
+  overflow: hidden;
+  padding: 10rem 0 0;
+}
+.offer-head {
+  padding: 0 4rem;
+  max-width: 1280px;
+  margin: 0 auto 5rem;
+}
+.offer-scroll-viewport {
+  overflow: hidden;
+  position: relative;
+}
+.offer-track {
+  display: flex;
+  gap: 0;
+  width: max-content;
+}
+.offer-card {
+  width: 420px;
+  flex-shrink: 0;
+  padding: 3.5rem;
+  border-right: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  position: relative;
+  transition: background .5s ease;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.offer-card:last-child { border-right: none; }
+.offer-card:hover { background: rgba(196,150,58,0.025); }
+.offer-card-n {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  opacity: 0.65;
+  display: block;
+  margin-bottom: 1.75rem;
+}
+.offer-card h4 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--chalk);
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+.offer-card p { font-size: 0.8rem; max-width: none; line-height: 1.75; }
+.offer-card-tag {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.offer-scroll-hint {
+  padding: 2rem 4rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+.offer-hint-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold-dim), transparent);
+}
+.offer-hint-text {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  white-space: nowrap;
+}
+.offer-scroll-bar {
+  flex: 2;
+  height: 1px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.offer-scroll-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;
+  background: var(--gold);
+  transition: width .2s ease;
+}
+.offer-footer {
+  padding: 5rem 4rem 10rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: center;
+  border-top: 1px solid var(--border);
+}
+.offer-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--chalk-dim);
+  line-height: 1.65;
+}
+.offer-pricing p { font-size: 0.875rem; max-width: none; }
+.offer-pricing-cta { margin-top: 2rem; }
+
+/* ════════════════════════════════════════════
+   BENEFITS
+════════════════════════════════════════════ */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border);
+  margin-top: 5rem;
+}
+.benefit-card {
+  padding: 3.25rem 3rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: background .5s ease;
+}
+.benefit-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(196,150,58,0.05) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+.benefit-card:hover::before { opacity: 1; }
+.benefit-card:hover { background: rgba(240,238,234,0.015); }
+.benefit-card:nth-child(3n)        { border-right: none; }
+.benefit-card:nth-last-child(-n+3) { border-bottom: none; }
+.benefit-n {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  opacity: 0.7;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+.benefit-card h3 { font-size: 1.3rem; color: var(--chalk); margin-bottom: 1rem; }
+.benefit-card p { font-size: 0.825rem; max-width: none; }
+
+/* ════════════════════════════════════════════
+   ORBITAL TIMELINE
+════════════════════════════════════════════ */
+#orbital {
+  background: var(--ink);
+  overflow: hidden;
+  position: relative;
+}
+#orbital::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 55%, rgba(196,150,58,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+#orbital-stage {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 5rem auto 0;
+  flex-shrink: 0;
+}
+#orbital-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--gold-dim), var(--gold) 55%, #f0b84e);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px rgba(196,150,58,0.35), 0 0 40px rgba(196,150,58,0.25), 0 0 80px rgba(196,150,58,0.12);
+  z-index: 10;
+  cursor: default;
+  animation: orb-pulse 3.5s ease-in-out infinite;
+}
+@keyframes orb-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(196,150,58,0.35), 0 0 40px rgba(196,150,58,0.25), 0 0 80px rgba(196,150,58,0.12); }
+  50%       { box-shadow: 0 0 0 1px rgba(196,150,58,0.5),  0 0 55px rgba(196,150,58,0.38), 0 0 110px rgba(196,150,58,0.18); }
+}
+.orbital-center-label {
+  font-family: var(--serif);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  text-transform: uppercase;
+  line-height: 1;
+}
+.orbital-center-sub {
+  font-family: var(--mono);
+  font-size: 0.42rem;
+  letter-spacing: 0.22em;
+  color: rgba(6,6,6,0.6);
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.orbital-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 400px; height: 400px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(196,150,58,0.12);
+  pointer-events: none;
+  animation: ring-rotate 40s linear infinite;
+}
+.orbital-ring-inner {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 260px; height: 260px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(196,150,58,0.08);
+  pointer-events: none;
+  animation: ring-rotate 25s linear infinite reverse;
+}
+@keyframes ring-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.orbital-node {
+  position: absolute;
+  width: 48px; height: 48px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 5;
+  transition: opacity 0.4s ease;
+}
+.orbital-node-dot {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  border: 1px solid rgba(196,150,58,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+.orbital-node-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(196,150,58,0.18), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.orbital-node:hover .orbital-node-dot,
+.orbital-node.active .orbital-node-dot {
+  background: var(--ink-2);
+  border-color: var(--gold);
+  box-shadow: 0 0 18px rgba(196,150,58,0.3);
+}
+.orbital-node:hover .orbital-node-dot::after,
+.orbital-node.active .orbital-node-dot::after { opacity: 1; }
+.orbital-node-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+  z-index: 1;
+  position: relative;
+}
+.orbital-node-label {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--chalk-mute);
+  white-space: nowrap;
+  transition: color 0.3s ease;
+  pointer-events: none;
+}
+.orbital-node:hover .orbital-node-label,
+.orbital-node.active .orbital-node-label { color: var(--gold-pale); }
+.orbital-node.related .orbital-node-dot {
+  animation: related-pulse 1.2s ease-in-out infinite;
+}
+@keyframes related-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(196,150,58,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(196,150,58,0); }
+}
+.orbital-connection {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(196,150,58,0.25), rgba(196,150,58,0.05));
+  transform-origin: top center;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.orbital-connection.visible { opacity: 1; }
+/* Detail card */
+.orbital-card {
+  position: absolute;
+  top: 50%; left: calc(100% + 2.5rem);
+  transform: translateY(-50%);
+  width: 320px;
+  background: var(--ink-2);
+  border: 1px solid var(--border-hi);
+  padding: 2.2rem 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  transform: translateY(-50%) translateX(-12px);
+}
+.orbital-card.show {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(-50%) translateX(0);
+}
+.orbital-card-status {
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(196,150,58,0.08);
+  border: 1px solid rgba(196,150,58,0.2);
+  padding: 0.3em 0.85em;
+  display: inline-block;
+  margin-bottom: 1.2rem;
+}
+.orbital-card-title {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--chalk);
+  margin-bottom: 0.9rem;
+  line-height: 1.2;
+}
+.orbital-card-body {
+  font-size: 0.8rem;
+  color: var(--chalk-dim);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.orbital-card-energy {
+  margin-bottom: 1.5rem;
+}
+.orbital-card-energy-label {
+  font-family: var(--mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--chalk-mute);
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+.orbital-energy-bar {
+  height: 2px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.orbital-energy-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  background: linear-gradient(to right, var(--gold-dim), var(--gold));
+  transition: width 0.8s var(--ease-out);
+}
+.orbital-card-related {
+  font-family: var(--mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--chalk-mute);
+  margin-bottom: 0.75rem;
+}
+.orbital-related-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.orbital-related-btn {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: none;
+  border: 1px solid rgba(196,150,58,0.28);
+  padding: 0.35em 0.8em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.orbital-related-btn:hover {
+  background: rgba(196,150,58,0.08);
+  border-color: var(--gold);
+  color: var(--gold-pale);
+}
+.orbital-card-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  width: 24px; height: 24px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--chalk-mute);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  line-height: 1;
+}
+.orbital-card-close:hover { border-color: var(--chalk-dim); color: var(--chalk); }
+.orbital-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.orbital-hint {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  margin-top: 3rem;
+}
+@media (max-width: 900px) {
+  #orbital-stage { width: 360px; height: 360px; }
+  .orbital-ring { width: 310px; height: 310px; }
+  .orbital-ring-inner { width: 200px; height: 200px; }
+  .orbital-card {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin-top: 2.5rem;
+  }
+  .orbital-card.show { transform: none; }
+  .orbital-wrap { flex-direction: column; }
+}
+
+/* ════════════════════════════════════════════
+   PROCESS
+════════════════════════════════════════════ */
+#process { background: var(--ink-1); }
+.phases-wrap {
+  margin-top: 5.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+}
+.phases-wrap::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 1rem;
+  right: 1rem;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-hi) 10%, var(--border-hi) 90%, transparent);
+}
+.phase {
+  padding: 3rem 2.5rem 0;
+  position: relative;
+}
+.phase-dot {
+  position: absolute;
+  top: 3px; left: 2.5rem;
+  width: 15px; height: 15px;
+  border: 1px solid var(--gold-dim);
+  background: var(--ink-1);
+  transform: rotate(45deg);
+  transition: background .4s ease, border-color .4s ease;
+}
+.phase:hover .phase-dot {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+}
+.phase-label {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.75;
+  display: block;
+  padding-top: 2.75rem;
+  margin-bottom: 0.75rem;
+}
+.phase h3 { font-size: 1.6rem; color: var(--chalk); margin-bottom: 0.35rem; }
+.phase-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--chalk-sub);
+  display: block;
+  margin-bottom: 1.5rem;
+}
+.phase p { font-size: 0.8rem; max-width: none; }
+
+/* ════════════════════════════════════════════
+   TRANSFORMATION
+════════════════════════════════════════════ */
+#transformation { padding: 0; overflow: hidden; }
+.transform-head {
+  padding: 10rem 4rem 5rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.split-panes { display: grid; grid-template-columns: 1fr 1fr; }
+.pane {
+  padding: 6rem 5.5rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pane-before { background: #060810; }
+.pane-before::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 80% at -10% 50%, rgba(12,20,55,0.4) 0%, transparent 65%);
+  pointer-events: none;
+}
+.pane-after { background: #08070a; }
+.pane-after::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 80% at 110% 50%, rgba(40,28,5,0.35) 0%, transparent 65%);
+  pointer-events: none;
+}
+.pane-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+.pane-before .pane-label { color: rgba(100,115,185,0.6); }
+.pane-after  .pane-label { color: var(--gold); opacity: 0.8; }
+.pane-body { position: relative; z-index: 1; }
+.pane-before .pane-body p { color: rgba(125,135,170,0.75); font-size: 0.9375rem; line-height: 1.9; max-width: none; }
+.pane-after  .pane-body p { color: rgba(218,208,178,0.8);  font-size: 0.9375rem; line-height: 1.9; max-width: none; }
+
+/* ════════════════════════════════════════════
+   SERVICES GRID
+════════════════════════════════════════════ */
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--border);
+  margin-top: 5rem;
+}
+.svc-card {
+  padding: 4rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  transition: background .5s ease;
+}
+.svc-card:hover { background: rgba(240,238,234,0.012); }
+.svc-card:nth-child(2n)        { border-right: none; }
+.svc-card:nth-last-child(-n+2) { border-bottom: none; }
+.svc-n {
+  font-family: var(--serif);
+  font-size: 3.8rem;
+  font-weight: 300;
+  color: rgba(240,238,234,0.04);
+  line-height: 1;
+  position: absolute;
+  top: 2rem; right: 3rem;
+}
+.svc-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--chalk-dim);
+  margin-bottom: 1.5rem;
+  display: block;
+  line-height: 1.55;
+}
+.svc-card h3 { font-size: 1.4rem; color: var(--chalk); margin-bottom: 1rem; }
+.svc-card p  { font-size: 0.82rem; max-width: none; }
+
+/* ════════════════════════════════════════════
+   DIFFERENTIATION
+════════════════════════════════════════════ */
+#differentiation { background: var(--ink-1); }
+.diff-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 9rem;
+  align-items: start;
+}
+
+.dist-item {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1.5rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.dist-item:first-child { border-top: 1px solid var(--border); }
+.dist-n {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  color: var(--chalk-sub);
+  padding-top: 0.3rem;
+}
+.dist-item h4 { font-family: var(--serif); font-size: 1.18rem; font-weight: 400; color: var(--chalk); margin-bottom: 0.5rem; }
+.dist-item p  { font-size: 0.8rem; max-width: none; }
+
+/* ════════════════════════════════════════════
+   ABOUT
+════════════════════════════════════════════ */
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 8rem;
+  align-items: center;
+}
+.about-frame {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: var(--ink-2);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.about-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition: filter .8s ease;
+}
+.about-frame img:hover { filter: grayscale(50%); }
+.about-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink-2);
+}
+.about-placeholder svg { width: 100%; height: 100%; opacity: 0.3; }
+.about-frame-accent {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--gold-dim), var(--gold), transparent);
+}
+.about-caption { margin-top: 1.5rem; text-align: center; }
+.about-caption strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--chalk);
+}
+.about-caption span {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.75;
+}
+.about-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--chalk-dim);
+  border-left: 2px solid var(--gold);
+  padding-left: 2rem;
+  line-height: 1.6;
+  margin: 2.75rem 0;
+}
+.about-creds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+.cred-tag {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.9rem;
+}
+
+/* ════════════════════════════════════════════
+   PROOF + CASE STUDIES
+════════════════════════════════════════════ */
+#proof { background: var(--ink-1); }
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--border);
+  margin-top: 5rem;
+  margin-bottom: 6rem;
+}
+.result-card {
+  padding: 3.5rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background .4s ease;
+}
+.result-card:hover { background: rgba(240,238,234,0.014); }
+.result-card:nth-child(2n)        { border-right: none; }
+.result-card:nth-last-child(-n+2) { border-bottom: none; }
+.result-stat-num {
+  font-family: var(--serif);
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  display: block;
+  margin-bottom: 1.25rem;
+}
+.result-card p {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--chalk);
+  max-width: none;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.result-card p mark { background: none; color: var(--gold); font-style: normal; font-weight: 500; }
+.result-src {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+  display: block;
+}
+/* Case studies */
+.case-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border);
+  margin-bottom: 6rem;
+}
+.cs-card {
+  padding: 3rem 2.75rem;
+  border-right: 1px solid var(--border);
+  transition: background .4s ease;
+}
+.cs-card:last-child { border-right: none; }
+.cs-card:hover { background: rgba(196,150,58,0.025); }
+.cs-tag {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.7;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+.cs-card h4 { font-family: var(--serif); font-size: 1.15rem; font-weight: 400; color: var(--chalk); margin-bottom: 0.75rem; line-height: 1.3; }
+.cs-challenge { font-size: 0.8rem; line-height: 1.75; margin-bottom: 1.75rem; max-width: none; }
+.cs-result {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+}
+.cs-result-n {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.cs-result-l {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--chalk-sub);
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+}
+/* Authority pillars */
+.authority-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4rem;
+}
+.auth-pillar h4 { font-family: var(--serif); font-size: 1.3rem; font-weight: 400; color: var(--chalk); margin-bottom: 1rem; }
+.auth-pillar p  { font-size: 0.82rem; max-width: none; }
+
+/* ════════════════════════════════════════════
+   TESTIMONIALS
+════════════════════════════════════════════ */
+
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+  margin-top: 5rem;
+}
+.testi-card {
+  background: var(--ink);
+  padding: 3.75rem 3.25rem;
+  display: flex;
+  flex-direction: column;
+  transition: background .5s ease;
+}
+.testi-card:hover { background: var(--ink-1); }
+.testi-open {
+  font-family: var(--serif);
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: var(--gold);
+  opacity: 0.3;
+  line-height: 0.7;
+  user-select: none;
+  margin-bottom: 1.5rem;
+}
+.testi-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--chalk);
+  line-height: 1.72;
+  flex: 1;
+  margin-bottom: 2.5rem;
+}
+.testi-result-tag {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 0.55rem 0.9rem;
+  display: inline-block;
+  align-self: flex-start;
+  margin-bottom: 2rem;
+}
+.testi-foot {
+  border-top: 1px solid var(--border);
+  padding-top: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.testi-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--ink-2);
+  border: 1px solid var(--border-hi);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.testi-avatar-i {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--chalk-mute);
+}
+.testi-name {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--chalk);
+  display: block;
+}
+.testi-role {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--chalk-sub);
+  display: block;
+  margin-top: 0.2rem;
+}
+
+/* ════════════════════════════════════════════
+   DIAGNOSTIC TOOL — WOW FEATURE
+════════════════════════════════════════════ */
+#diagnostic { background: var(--ink-1); overflow: hidden; }
+.diag-head { margin-bottom: 5.5rem; }
+.diag-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8rem;
+  align-items: start;
+}
+.diag-sliders { display: flex; flex-direction: column; gap: 0; }
+.diag-slider-item {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.diag-slider-item:first-child { border-top: 1px solid var(--border); }
+.diag-slider-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.75rem;
+}
+.diag-q {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--chalk);
+  line-height: 1.4;
+  max-width: 32ch;
+}
+.diag-val {
+  font-family: var(--serif);
+  font-size: 1.85rem;
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  min-width: 5ch;
+  text-align: right;
+}
+.diag-val-unit {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--gold-pale);
+  opacity: 0.6;
+}
+/* Custom range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 1px;
+  background: var(--border-hi);
+  outline: none;
+  cursor: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--chalk);
+  cursor: none;
+  border: 1px solid var(--border-hi);
+  box-shadow: 0 0 0 0 rgba(196,150,58,0);
+  transition: transform .25s var(--ease-spring), box-shadow .25s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.35);
+  box-shadow: 0 0 16px rgba(196,150,58,0.45);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--chalk);
+  cursor: none;
+  border: 1px solid var(--border-hi);
+}
+.diag-track-wrap {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+.diag-track-fill {
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  height: 1px;
+  background: linear-gradient(to right, var(--gold-dim), var(--gold));
+  pointer-events: none;
+  transition: width .15s ease;
+}
+/* Results panel */
+.diag-results {
+  position: sticky;
+  top: 120px;
+}
+.diag-gauges {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+.gauge-wrap { text-align: center; }
+.gauge-label-top {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 1.25rem;
+}
+.gauge-current .gauge-label-top { color: var(--chalk-sub); }
+.gauge-schatten .gauge-label-top { color: var(--gold); }
+.gauge-svg {
+  width: 100%;
+  max-width: 180px;
+  overflow: visible;
+}
+.gauge-bg-arc {
+  fill: none;
+  stroke: rgba(240,238,234,0.07);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+.gauge-arc {
+  fill: none;
+  stroke-width: 7;
+  stroke-linecap: round;
+  transition: stroke-dashoffset .8s var(--ease-out), stroke .5s ease;
+}
+.gauge-current  .gauge-arc { stroke: var(--chalk-mute); }
+.gauge-schatten .gauge-arc { stroke: var(--gold); filter: drop-shadow(0 0 8px rgba(196,150,58,0.5)); }
+.gauge-num {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  font-weight: 300;
+  dominant-baseline: middle;
+  text-anchor: middle;
+  transition: all .6s ease;
+}
+.gauge-current  .gauge-num { fill: var(--chalk-dim); }
+.gauge-schatten .gauge-num { fill: var(--gold); }
+.gauge-sub-text {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  dominant-baseline: middle;
+  text-anchor: middle;
+  fill: var(--chalk-sub);
+  letter-spacing: 0.08em;
+}
+.diag-assessment {
+  font-family: var(--serif);
+  font-size: 0.975rem;
+  font-style: italic;
+  color: var(--chalk-dim);
+  line-height: 1.75;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--gold);
+  margin-bottom: 2rem;
+  min-height: 5em;
+  transition: opacity .4s ease;
+}
+.diag-cta-note {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  display: block;
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
+/* ════════════════════════════════════════════
+   CONTACT FORM
+════════════════════════════════════════════ */
+#contact { background: var(--ink-1); }
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 9rem;
+  align-items: start;
+}
+.contact-left p { max-width: 44ch; }
+.contact-details {
+  margin-top: 3.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.cd-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+.cd-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.75;
+  min-width: 80px;
+  padding-top: 0.1rem;
+}
+.cd-val { font-size: 0.875rem; color: var(--chalk-mute); line-height: 1.6; }
+
+/* Form */
+.contact-form { display: flex; flex-direction: column; }
+.form-row {
+  border: 1px solid var(--border);
+  border-bottom: none;
+  padding: 1.75rem 2rem;
+  position: relative;
+  transition: background .3s ease, border-color .3s ease;
+}
+.form-row:last-of-type { border-bottom: 1px solid var(--border); }
+.form-row:focus-within { background: rgba(196,150,58,0.03); border-color: var(--border-hi); }
+.form-row label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  margin-bottom: 0.8rem;
+  transition: color .3s ease;
+}
+.form-row:focus-within label { color: var(--gold); }
+.form-row input,
+.form-row select,
+.form-row textarea {
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--chalk);
+  resize: none;
+  cursor: none;
+}
+.form-row select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%233c3836' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  padding-right: 1.5rem;
+  cursor: none;
+}
+.form-row select option { background: var(--ink-2); color: var(--chalk); }
+.form-row textarea { min-height: 88px; }
+.form-row input::placeholder,
+.form-row textarea::placeholder { color: var(--chalk-sub); }
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2.25rem;
+  gap: 2rem;
+}
+.form-note {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--chalk-sub);
+  line-height: 1.65;
+  max-width: 34ch;
+}
+.btn-submit {
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  background: var(--chalk);
+  color: var(--ink);
+  border: none;
+  padding: 1.15rem 2.8rem;
+  cursor: none;
+  white-space: nowrap;
+  transition: transform .35s var(--ease-out), opacity .3s ease;
+}
+.btn-submit:hover { transform: translateY(-2px); }
+/* Success state */
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 5rem 2rem;
+  border: 1px solid var(--border);
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+.form-success.show { display: flex; }
+.success-icon {
+  width: 42px; height: 42px;
+  border: 1px solid var(--gold);
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+.success-icon::after {
+  content: '';
+  width: 12px; height: 8px;
+  border-left: 1.5px solid var(--gold);
+  border-bottom: 1.5px solid var(--gold);
+  transform: rotate(-45deg) translate(1px,-1px);
+}
+.form-success h3 { font-family: var(--serif); font-size: 1.8rem; font-weight: 300; color: var(--chalk); }
+.form-success p  { max-width: 44ch; }
+
+/* ════════════════════════════════════════════
+   FAQ
+════════════════════════════════════════════ */
+#faq { background: var(--ink); }
+.faq-list { margin-top: 5rem; max-width: 860px; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-item:first-child { border-top: 1px solid var(--border); }
+.faq-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--chalk);
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 300;
+  text-align: left;
+  padding: 2rem 0;
+  cursor: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  transition: color .3s ease;
+}
+.faq-btn:hover { color: var(--chalk-dim); }
+.faq-icon {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  position: relative;
+}
+.faq-icon::before, .faq-icon::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+  transition: transform .4s var(--ease-out), opacity .3s ease;
+}
+.faq-icon::before { width: 100%; height: 1px; top: 50%; left: 0; }
+.faq-icon::after  { width: 1px; height: 100%; top: 0; left: 50%; }
+.faq-item.open .faq-icon::after { transform: rotate(90deg); opacity: 0; }
+.faq-ans {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .55s var(--ease-out);
+}
+.faq-item.open .faq-ans { max-height: 500px; }
+.faq-ans p { padding-bottom: 2rem; font-size: 0.875rem; line-height: 1.88; }
+
+/* ════════════════════════════════════════════
+   FINAL CTA
+════════════════════════════════════════════ */
+#cta-final {
+  text-align: center;
+  padding: 13rem 0;
+  position: relative;
+  overflow: hidden;
+}
+#cta-final::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 1px; height: 100px;
+  background: linear-gradient(to bottom, transparent, var(--border));
+}
+.cta-bg-char {
+  font-family: var(--serif);
+  font-size: clamp(10rem, 22vw, 18rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: rgba(240,238,234,0.024);
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+#cta-final .wrap { position: relative; z-index: 1; }
+#cta-final h2 {
+  font-size: clamp(2.2rem, 4.5vw, 3.75rem);
+  max-width: 18ch;
+  margin: 0 auto 3rem;
+}
+#cta-final p { max-width: 46ch; margin: 0 auto 3.5rem; }
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2.75rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-logo {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--chalk-mute);
+}
+.footer-nav {
+  display: flex;
+  gap: 2.25rem;
+  list-style: none;
+}
+.footer-nav a {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--chalk-sub);
+  transition: color .3s ease;
+}
+.footer-nav a:hover { color: var(--chalk-mute); }
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--chalk-sub);
+  letter-spacing: 0.08em;
+}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE — 1100px
+════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .hero-left           { padding-right: 0; }
+  .problem-layout      { grid-template-columns: 1fr; gap: 4.5rem; }
+  .solution-grid       { grid-template-columns: 1fr; gap: 4.5rem; }
+  .diff-grid           { grid-template-columns: 1fr; gap: 4.5rem; }
+  .about-grid          { grid-template-columns: 1fr; gap: 4.5rem; }
+  .about-frame         { max-width: 320px; }
+  .contact-grid        { grid-template-columns: 1fr; gap: 4.5rem; }
+  .diag-grid           { grid-template-columns: 1fr; gap: 4.5rem; }
+  .diag-results        { position: static; }
+  .split-panes         { grid-template-columns: 1fr; }
+  .phases-wrap         { grid-template-columns: repeat(2, 1fr); gap: 3rem 0; }
+  .phases-wrap::before { display: none; }
+  .offer-footer        { grid-template-columns: 1fr; gap: 2.5rem; }
+  .offer-pricing       { text-align: left; }
+}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE — 768px
+════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  :root { font-size: 15px; }
+  body  { cursor: auto; }
+  #cursor-dot, #cursor-ring { display: none; }
+  .cursor-trail { display: none; }
+  #nav  { padding: 1.25rem 1.5rem; }
+  .nav-links, .nav-urgency { display: none; }
+  .nav-right .nav-cta { display: none; }
+  .hamburger { display: flex; }
+  .wrap  { padding: 0 1.5rem; }
+  section { padding: 6.5rem 0; }
+  .hero-inner  { padding: 8rem 1.5rem; }
+  .hero-hl     { font-size: clamp(2.4rem, 8vw, 3.5rem); }
+  .stats-strip { grid-template-columns: repeat(2, 1fr); padding: 0 1.5rem; }
+  .stat-item:nth-child(2) { border-right: none; }
+  .stat-item:nth-child(3) { border-right: 1px solid var(--border); padding-left: 0; }
+  .benefits-grid { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .results-grid  { grid-template-columns: 1fr; }
+  .case-strip    { grid-template-columns: 1fr; }
+  .cs-card       { border-right: none; border-bottom: 1px solid var(--border); }
+  .cs-card:last-child { border-bottom: none; }
+  .testi-grid    { grid-template-columns: 1fr; gap: 1px; }
+  .authority-pillars { grid-template-columns: 1fr; gap: 2.5rem; }
+  .phases-wrap   { grid-template-columns: 1fr; }
+  .diag-gauges   { grid-template-columns: 1fr; }
+  .form-actions  { flex-direction: column; align-items: flex-start; }
+  .pane          { padding: 4rem 1.5rem; min-height: auto; }
+  .transform-head { padding: 6rem 1.5rem 3rem; }
+  footer { flex-direction: column; gap: 2rem; text-align: center; }
+  .footer-nav { flex-wrap: wrap; justify-content: center; }
+  .offer-card    { width: 85vw; }
+  .offer-head, .offer-scroll-hint, .offer-footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+
+/* ── Section shader canvases ── */
+.section-shader {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+  display: block;
+}
+#services-shader { opacity: 0.28; }
+#orbital-shader  { opacity: 0.22; }
+
+/* ── Hide UnicornStudio watermark ── */
+[data-us-project] a[href*="unicorn"],
+[data-us-project] a[href*="unicornstudio"],
+[data-us-project] button[title*="unicorn" i],
+[data-us-project] div[title*="Made with" i],
+[data-us-project] [class*="watermark"],
+[data-us-project] [class*="brand"],
+[data-us-project] [class*="credit"],
+[data-us-project] [class*="badge"],
+[data-us-project] [class*="powered"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* ── UnicornStudio section backgrounds ── */
+.us-section-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+.us-section-bg > div {
+  width: 100%;
+  height: 100%;
+}
+/* Clip the canvas to remove the watermark rendered at the bottom of the scene */
+.us-section-bg canvas {
+  clip-path: inset(0 0 12% 0) !important;
+  transform: scale(1.14) !important;
+  transform-origin: center top !important;
+}
+/* Hard cover over the bottom-right corner where the watermark renders */
+.us-watermark-cover {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 260px;
+  height: 48px;
+  background: var(--ink);
+  z-index: 2;
+  pointer-events: none;
+}
+#problem-bg         { opacity: 0.25; }
+#differentiation-bg { opacity: 0.20; }
+#diagnostic-shader  { opacity: 0.30; }
+#solution-shader    { opacity: 0.25; }
+#brightness-container {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  mix-blend-mode: screen; opacity: 0.55;
+}
+#brightness-container canvas {
+  filter: drop-shadow(0px 0px 6px rgba(0,173,181,0.6));
+}
+</style>
+</head>
+<body>
+
+<!-- Flowing katana animation — layer 2 (between background and content) -->
+<canvas id="katana-canvas" aria-hidden="true"></canvas>
+
+<!-- Grain texture -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ════════════════════════════════════════════
+     PRELOADER
+════════════════════════════════════════════ -->
+<div id="preloader" aria-hidden="true">
+  <svg class="preloader-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path class="preloader-path" d="M 48 18 C 48 14 44 10 32 10 C 20 10 16 16 16 22 C 16 34 48 30 48 42 C 48 48 44 54 32 54 C 20 54 16 50 16 46"
+      stroke="#c4963a" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div class="preloader-wordmark" id="preloader-wordmark"></div>
+  <div class="preloader-bar-wrap">
+    <div class="preloader-bar" id="preloader-bar"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     CURSOR
+════════════════════════════════════════════ -->
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+
+<!-- ════════════════════════════════════════════
+     SCROLL PROGRESS
+════════════════════════════════════════════ -->
+<div id="scroll-progress" aria-hidden="true"></div>
+
+<!-- ════════════════════════════════════════════
+     MOBILE MENU
+════════════════════════════════════════════ -->
+<div id="mobile-menu" aria-hidden="true">
+  <a href="#solution" class="mobile-link">Approach</a>
+  <a href="#services" class="mobile-link">Services</a>
+  <a href="#process" class="mobile-link">Process</a>
+  <a href="#proof" class="mobile-link">Results</a>
+  <a href="#contact" class="mobile-link mobile-cta-link">Reserve Your Diagnostic Call</a>
+  <span class="mobile-urgency-note">Q2 2026 — Only 2 Spots Left</span>
+</div>
+
+<!-- ════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════ -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">Schatten</a>
+  <ul class="nav-links">
+    <li><a href="#solution">Approach</a></li>
+    <li><a href="#offer">System</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#proof">Results</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-urgency">Q2 2026 — Only 2 Spots Left</span>
+    <a href="#contact" class="nav-cta btn-magnetic">Reserve Your Diagnostic Call</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section id="hero">
+  <div id="shader-mount"></div>
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+
+  <div class="hero-inner">
+    <!-- LEFT: Copy -->
+    <div class="hero-left">
+      <span class="hero-eyebrow" id="hero-eyebrow">For Founders Generating $500K–$10M Who Are Done Guessing</span>
+
+      <h1 class="hero-hl" id="hero-hl">
+        How to Double Your Revenue<br>Without More Headcount,<br><em>More Ad Spend, or Another Agency.</em>
+      </h1>
+
+      <p class="hero-hook" id="hero-hook">We rebuild the sales funnel, automate the operations, and install an AI layer — so your business grows without you doing everything manually.</p>
+
+      <p class="hero-body" id="hero-body">We partner with founders who are tired of working hard and still not seeing the numbers move. We go inside your business and rebuild the systems that are quietly costing you money — your funnel, your automations, your AI layer, how you're positioned in the market. When we're done, your business is structured to grow. Not hoping to.</p>
+      <p class="hero-qualifier" id="hero-qualifier">For founders with $500K–$10M in revenue who know their model works — and want to stop leaving money in broken systems.</p>
+      <span class="hero-scarcity" id="hero-scarcity">Selected engagements only &nbsp;·&nbsp; Q2 2026: <span>2 of 6 slots remaining</span></span>
+
+      <div class="hero-actions" id="hero-actions">
+        <span class="btn-magnetic">
+          <a href="#contact" class="btn btn-primary">Reserve Your Diagnostic Call — Only 2 Spots Left This Quarter</a>
+        </span>
+        <button class="btn-ghost" onclick="document.querySelector('#problem').scrollIntoView({behavior:'smooth'})">See Exactly What We Build →</button>
+      </div>
+    </div>
+
+    </div>
+
+  <!-- Katana quote — preserved from original design -->
+  <span class="katana-quote-overlay">"The katana does not swing wildly. It finds the line."</span>
+
+  <!-- Stats bar -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <span class="stat-num">
+        <span class="stat-prefix">−</span><span class="stat-counter" data-target="38">0</span><span class="stat-suffix">%</span>
+      </span>
+      <span class="stat-label">Sales cycle cut — $2M B2B firm</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">
+        <span class="stat-counter" data-target="22">0</span><span class="stat-suffix">h</span>
+      </span>
+      <span class="stat-label">Hours freed from manual work weekly</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">
+        <span class="stat-prefix">+</span><span class="stat-counter" data-target="61">0</span><span class="stat-suffix">%</span>
+      </span>
+      <span class="stat-label">Order value — same product, smarter funnel</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">
+        <span class="stat-prefix">$</span><span class="stat-counter" data-target="400">0</span><span class="stat-suffix">K</span>
+      </span>
+      <span class="stat-label">Revenue decision that took weeks — made in 2 hours</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PROBLEM
+════════════════════════════════════════════ -->
+<section id="problem">
+  <div id="problem-bg" class="us-section-bg">
+    <div data-us-project="OMzqyUv6M3kSnv0JeAtC"></div>
+    <div class="us-watermark-cover" aria-hidden="true"></div>
+  </div>
+  <div class="wrap">
+    <div class="problem-layout">
+      <div class="problem-left">
+        <span class="eyebrow eyebrow-gold" data-reveal>Sound Familiar?</span>
+        <h2 class="section-headline split-target" data-reveal>You're Doing Everything Right. So Why Isn't the Business Growing the Way It Should?</h2>
+        <div class="problem-copy" data-reveal>
+          <p>You have revenue. You have proof of concept. You have a team, a market, momentum in flashes. But behind the performance, something isn't right.</p>
+          <p>You've tried agencies. They delivered decks, not results. You've hired consultants. They spoke the language and understood nothing. You've done the work. The architecture underneath hasn't caught up.</p>
+          <p><strong>The problem isn't effort. You are not lacking effort. The problem is architecture.</strong></p>
+        </div>
+        <blockquote class="problem-close" data-reveal>
+          "The gap between where you are and where you are capable of going is not a gap of effort. It is a gap of system, strategy, and precision."
+        </blockquote>
+      </div>
+      <div class="problem-right">
+        <div class="pillars">
+          <div class="pillar" data-reveal><span class="pillar-n">01</span><p>Your funnel was built to capture, not to convert.</p></div>
+          <div class="pillar" data-reveal><span class="pillar-n">02</span><p>Your automations are reactive, not intelligent.</p></div>
+          <div class="pillar" data-reveal><span class="pillar-n">03</span><p>Your dashboard shows data. It doesn't show decisions.</p></div>
+          <div class="pillar" data-reveal><span class="pillar-n">04</span><p>Your marketing is visible. It is not strategic.</p></div>
+          <div class="pillar" data-reveal><span class="pillar-n">05</span><p>Your team operates. It does not orchestrate.</p></div>
+          <div class="pillar" data-reveal><span class="pillar-n">06</span><p>You are capable of significantly more. The gap between here and there is not effort. It is architecture.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     SOLUTION
+════════════════════════════════════════════ -->
+<section id="solution">
+  <canvas id="solution-shader" class="section-shader" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="solution-grid">
+      <div data-reveal>
+        <span class="eyebrow eyebrow-gold">The Schatten Approach</span>
+        <h2 class="section-headline">We Don't Give You Strategy Decks.<br><em>We Rebuild the Systems That Are Costing You Money.</em></h2>
+        <p style="margin-top:2rem;max-width:none;">Schatten is a Business Growth Partner — not an agency, not a consultant, not a software platform. We embed into the architecture of your business and rebuild it from the inside out.</p>
+        <p>The name Schatten means shadow in German. Not because we hide — but because the most powerful forces in business are the ones that operate beneath the visible surface.</p>
+      </div>
+      <div data-reveal>
+        <p>Most partners look at your marketing. We look at everything underneath it — the funnel, the automations, the AI layer, how your business is positioned. The stuff that's either working quietly for you or costing you quietly against you. We fix it. Then we build it to compound.</p>
+        <ul class="solution-list">
+          <li>A funnel that qualifies, educates, and converts with architectural certainty</li>
+          <li>Automations that make your business respond faster and smarter than any manual system</li>
+          <li>A dashboard that surfaces the exact intelligence you need to decide in seconds</li>
+          <li>An AI operational layer that handles cognitive overhead so you lead at the principal level</li>
+          <li>A market position so clear that ideal clients self-select in, wrong-fit clients self-select out</li>
+        </ul>
+        <span class="solution-closer">We don't promise growth. We build the system that makes growth the only logical outcome.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     OFFER — HORIZONTAL SCROLL
+════════════════════════════════════════════ -->
+<section id="offer">
+  <div class="offer-head" data-reveal>
+    <span class="eyebrow eyebrow-gold">The System</span>
+    <h2 class="section-headline">Eight Systems. Installed Inside Your Business.<br>Each One Pays for Itself.</h2>
+    <p style="margin-top:1rem;max-width:52ch;">Not a menu of services. One integrated engine — built specifically for your business, your market, your growth trajectory.</p>
+  </div>
+
+  <div class="offer-scroll-viewport" id="offer-viewport">
+    <div class="offer-track" id="offer-track">
+      <div class="offer-card">
+        <span class="offer-card-n">01</span>
+        <div>
+          <h4>AI Funnel Architecture Build</h4>
+          <p>Full redesign of your acquisition and conversion flow — from first contact to closed contract. Structural leaks identified, decision friction removed, each stage rebuilt for certainty.</p>
+        </div>
+        <span class="offer-card-tag">Acquisition · Conversion</span>
+      </div>
+      <div class="offer-card">
+        <span class="offer-card-n">02</span>
+        <div>
+          <h4>Automated Lead Qualification System</h4>
+          <p>AI + CRM integration that filters, scores, and routes every lead instantly. No manual triage. Your best leads get contacted before your competitors even open their inbox.</p>
+        </div>
+        <span class="offer-card-tag">AI · CRM · Automation</span>
+      </div>
+      <div class="offer-card">
+        <span class="offer-card-n">03</span>
+        <div>
+          <h4>High-Converting Web &amp; VSL Ecosystem</h4>
+          <p>Conversion-optimized digital infrastructure built to turn attention into booked revenue. Designed around your specific offer, audience, and competitive position.</p>
+        </div>
+        <span class="offer-card-tag">Web · Copy · Conversion</span>
+      </div>
+      <div class="offer-card">
+        <span class="offer-card-n">04</span>
+        <div>
+          <h4>War Room Command Dashboard</h4>
+          <p>Your business, visible in one centralized command center. What's flowing, where it's leaking, what to do next — in real-time, without digging through five platforms.</p>
+        </div>
+        <span class="offer-card-tag">Intelligence · Visibility</span>
+      </div>
+      <div class="offer-card">
+        <span class="offer-card-n">05</span>
+        <div>
+          <h4>Customer Journey Engineering</h4>
+          <p>From first contact through retention and loyalty loops — every stage redesigned for compounding lifetime value. Acquisition is the beginning, not the goal.</p>
+        </div>
+        <span class="offer-card-tag">Retention · LTV · Experience</span>
+      </div>
+      <div class="offer-card">
+        <span class="offer-card-n">06</span>
+        <div>
+          <h4>Process Automation &amp; Cost Reduction</h4>
+          <p>Identify and automate the tasks draining your time and payroll. Headcount requirements drop. Output rises. The operational drag that slows most businesses disappears.</p>
+        </div>
+        <span class="offer-card-tag">Automation · Efficiency</span>
+      </div>
+      <div class="offer-card">
+        <span class="offer-card-n">07</span>
+        <div>
+          <h4>Database Structuring &amp; AI Segmentation</h4>
+          <p>Raw data transformed into strategic leverage. Intelligent segmentation that makes every outreach more precise, every campaign more efficient, every decision more grounded.</p>
+        </div>
+        <span class="offer-card-tag">Data · Segmentation · AI</span>
+      </div>
+      <div class="offer-card">
+        <span class="offer-card-n">08</span>
+        <div>
+          <h4>Ongoing Optimization &amp; Performance Calibration</h4>
+          <p>Continuous refinement based on real data. Each iteration pushes the system closer to its performance ceiling. The compounding phase is where the real returns emerge.</p>
+        </div>
+        <span class="offer-card-tag">Optimization · Compounding</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="offer-scroll-hint" data-reveal>
+    <div class="offer-hint-line"></div>
+    <span class="offer-hint-text">Scroll to explore</span>
+    <div class="offer-scroll-bar">
+      <div class="offer-scroll-fill" id="offer-scroll-fill"></div>
+    </div>
+  </div>
+
+  <div class="offer-footer">
+    <p class="offer-note" data-reveal>"We don't charge for deliverables. We charge for outcomes. The system pays for itself — or we keep building until it does."</p>
+    <div class="offer-pricing" data-reveal>
+      <p>We don't quote prices before we understand your business. Investment is based on what you stand to gain — and discussed only after a diagnostic conversation.</p>
+      <div class="offer-pricing-cta">
+        <span class="btn-magnetic">
+          <a href="#contact" class="btn btn-gold">Apply for a Diagnostic Call — Q2 Has 2 Spots Open</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     BENEFITS
+════════════════════════════════════════════ -->
+<section id="benefits">
+  <div class="wrap">
+    <div class="section-intro" data-reveal>
+      <span class="eyebrow eyebrow-gold">The Real Outcomes</span>
+      <h2 class="section-headline">Here's What Changes<br>When the Architecture Is Fixed.</h2>
+      <p style="margin-top:1rem;">Not just metrics. A completely different experience of running your business.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card" data-reveal>
+        <span class="benefit-n">01</span>
+        <h3>ROI Before Anything Else</h3>
+        <p>Our first mandate: recover and multiply your investment before pursuing expansion. You never wonder if this was worth it — because we don't move on until it demonstrably is.</p>
+      </div>
+      <div class="benefit-card" data-reveal>
+        <span class="benefit-n">02</span>
+        <h3>Clarity of Command</h3>
+        <p>No more guessing what to fix. Your dashboard tells you exactly what's working, what isn't, and what to do next. Every morning.</p>
+      </div>
+      <div class="benefit-card" data-reveal>
+        <span class="benefit-n">03</span>
+        <h3>Conversion Without Friction</h3>
+        <p>Your funnel stops bleeding. Leads that were once lost to hesitation or poor positioning now move forward with momentum. Your revenue reflects the value you were always capable of delivering.</p>
+      </div>
+      <div class="benefit-card" data-reveal>
+        <span class="benefit-n">04</span>
+        <h3>Operational Sovereignty</h3>
+        <p>Your business runs on intelligence, not hustle. The systems we install compound over time — working while you sleep, responding while you think, scaling while you lead.</p>
+      </div>
+      <div class="benefit-card" data-reveal>
+        <span class="benefit-n">05</span>
+        <h3>Market Precision</h3>
+        <p>You stop competing. You start occupying the exact position where your ideal client has no meaningful alternative. The right clients arrive with urgency.</p>
+      </div>
+      <div class="benefit-card" data-reveal>
+        <span class="benefit-n">06</span>
+        <h3>Speed at Scale</h3>
+        <p>Decisions that once took days take minutes. Processes that once required five people run on one. The entire organization moves faster without burning out.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     ORBITAL TIMELINE
+════════════════════════════════════════════ -->
+<section id="orbital">
+  <canvas id="orbital-shader" class="section-shader" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="section-intro" data-reveal>
+      <span class="eyebrow eyebrow-gold">The System Architecture</span>
+      <h2 class="section-headline">Six Disciplines.<br>One Compounding Machine.</h2>
+      <p style="margin-top:1rem;">Every discipline exists in deliberate relationship to the others. Together, they form a single compounding growth engine — not a collection of tools, but an architecture.</p>
+    </div>
+    <div class="orbital-wrap" data-reveal>
+      <div id="orbital-stage">
+        <div class="orbital-ring"></div>
+        <div class="orbital-ring-inner"></div>
+        <div id="orbital-center">
+          <span class="orbital-center-label">Schatten</span>
+          <span class="orbital-center-sub">System</span>
+        </div>
+        <!-- Nodes and connections rendered by JS -->
+        <div id="orbital-card" class="orbital-card">
+          <button class="orbital-card-close" id="orbital-card-close" aria-label="Close">✕</button>
+          <span class="orbital-card-status" id="orbital-card-status"></span>
+          <div class="orbital-card-title" id="orbital-card-title"></div>
+          <p class="orbital-card-body" id="orbital-card-body"></p>
+          <div class="orbital-card-energy">
+            <div class="orbital-card-energy-label">
+              <span>Integration Depth</span>
+              <span id="orbital-energy-pct"></span>
+            </div>
+            <div class="orbital-energy-bar"><div class="orbital-energy-fill" id="orbital-energy-fill"></div></div>
+          </div>
+          <div class="orbital-card-related">Connected Systems</div>
+          <div class="orbital-related-btns" id="orbital-related-btns"></div>
+        </div>
+      </div>
+    </div>
+    <p class="orbital-hint">Click any node to explore — click background to reset</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PROCESS
+════════════════════════════════════════════ -->
+<section id="process">
+  <div class="wrap">
+    <div class="section-intro" data-reveal>
+      <span class="eyebrow eyebrow-gold">The Engagement Architecture</span>
+      <h2 class="section-headline">Here's Exactly What Happens —<br>Week by Week.</h2>
+      <p style="margin-top:1rem;">Every Schatten engagement follows a four-phase model: generate leverage quickly, then compound it over time.</p>
+    </div>
+    <div class="phases-wrap">
+      <div class="phase" data-reveal>
+        <div class="phase-dot"></div>
+        <span class="phase-label">Phase 01</span>
+        <h3>Reconnaissance</h3>
+        <span class="phase-sub">The analysis before the action.</span>
+        <p>A deep-architecture audit of your funnel, operations, market position, team structure, and revenue model. You receive a diagnostic most businesses never see — a precise, honest map of your current state and your highest-potential path forward.</p>
+      </div>
+      <div class="phase" data-reveal>
+        <div class="phase-dot"></div>
+        <span class="phase-label">Phase 02</span>
+        <h3>Architecture</h3>
+        <span class="phase-sub">The blueprint before the build.</span>
+        <p>The full strategic architecture of your engagement: the funnel redesign blueprint, automation map, dashboard structure, AI deployment plan, and positioning strategy. Nothing is built before it is understood. Nothing is installed before it is designed for your specific context.</p>
+      </div>
+      <div class="phase" data-reveal>
+        <div class="phase-dot"></div>
+        <span class="phase-label">Phase 03</span>
+        <h3>Installation</h3>
+        <span class="phase-sub">The execution that changes the machine.</span>
+        <p>Schatten deploys. Funnels are rebuilt. Automations are installed. Dashboards go live. The AI assistant is activated. Every element built to specification, tested for performance, handed over with full operational context. Not consulting. Not a strategy deck. An actual rebuild.</p>
+      </div>
+      <div class="phase" data-reveal>
+        <div class="phase-dot"></div>
+        <span class="phase-label">Phase 04</span>
+        <h3>Compounding</h3>
+        <span class="phase-sub">The phase where results multiply.</span>
+        <p>The systems are live. We monitor, iterate, and expand — turning good into exceptional, exceptional into structural competitive advantage. We track ROI with precision and push each system toward its performance ceiling. Most partners choose to continue here. This is where real growth begins.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     TRANSFORMATION
+════════════════════════════════════════════ -->
+<section id="transformation">
+  <div class="transform-head">
+    <div data-reveal>
+      <span class="eyebrow eyebrow-gold">The Transformation</span>
+      <h2 class="section-headline">Two Versions of the Same Business.<br>One Difference: Architecture.</h2>
+    </div>
+  </div>
+  <div class="split-panes">
+    <div class="pane pane-before">
+      <span class="pane-label">Before Schatten</span>
+      <div class="pane-body" data-reveal>
+        <p>Manual decisions every morning. A funnel that works sometimes. Data in five places that tells you what happened — never what to do. Talented team, fragmented results. Close to the next level. Not there yet.</p>
+      </div>
+    </div>
+    <div class="pane pane-after">
+      <span class="pane-label">After Schatten</span>
+      <div class="pane-body" data-reveal>
+        <p>Your business has a logic to it now — a precision you can feel before you see the numbers. Your funnel moves leads forward with structure. Your AI systems handle the operational mass while you operate at the strategic altitude that creates real growth. Your dashboard tells you what matters, in seconds. The right clients arrive already convinced. You are not working harder. You are operating with leverage — and it compounds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     DAMAGING ADMISSION
+════════════════════════════════════════════ -->
+<section id="admission">
+  <div class="wrap">
+    <div class="section-intro" data-reveal style="max-width:66ch;margin:0 auto;text-align:center;">
+      <span class="eyebrow eyebrow-gold">Before You Apply — Read This First</span>
+      <h2 class="section-headline" style="font-size:clamp(1.6rem,3vw,2.4rem);">The First 30 Days<br>Will Not Be Comfortable.</h2>
+    </div>
+    <div data-reveal style="max-width:66ch;margin:3rem auto 0;text-align:center;">
+      <p style="margin-bottom:1.5rem;">We're going to audit everything — your funnel, your automations, your team structure, your offers, your positioning. We will find things that aren't working. Some of them will have been broken for years. Some of them will have been costing you money quietly while you thought they were fine.</p>
+      <p style="margin-bottom:1.5rem;">That audit will feel like a lot. It is a lot.</p>
+      <p style="margin-bottom:1.5rem;">We also move fast. If you're not ready to make decisions and implement changes quickly, this engagement will frustrate you.</p>
+      <p style="margin-bottom:1.5rem;">We're telling you this because the founders who get the most out of a Schatten engagement are the ones who come in prepared to be uncomfortable for 30 days — in exchange for a system that compounds for years.</p>
+      <p><em>If that's you — the application is below.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     SERVICES
+════════════════════════════════════════════ -->
+<section id="services">
+  <canvas id="services-shader" class="section-shader" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="section-intro" data-reveal>
+      <span class="eyebrow eyebrow-gold">The Capability Suite</span>
+      <h2 class="section-headline">Six Core Capabilities.<br>One Complete Architecture.</h2>
+      <p style="margin-top:1rem;">These are the disciplines we deploy inside your business. Each engagement draws from all six — calibrated to your specific architecture and growth stage.</p>
+    </div>
+    <div class="services-grid">
+      <div class="svc-card" data-reveal>
+        <span class="svc-n">01</span>
+        <span class="svc-quote">"The funnel is not a marketing asset. It is a conversion system."</span>
+        <h3>Funnel Architecture &amp; Conversion Engineering</h3>
+        <p>We audit and rebuild your entire conversion pathway — from first touch to closed contract. We identify structural leaks, misaligned messaging, weak handoffs, and decision friction. The result is a funnel that converts with intelligence instead of hoping with volume.</p>
+      </div>
+      <div class="svc-card" data-reveal>
+        <span class="svc-n">02</span>
+        <span class="svc-quote">"Your business should run smarter than any individual inside it."</span>
+        <h3>AI Automation &amp; Internal Process Systematization</h3>
+        <p>AI-powered automations across your core operating processes — lead handling, client onboarding, follow-up sequences, internal communications, reporting, and decision triggers. Every automation purpose-built for your workflow.</p>
+      </div>
+      <div class="svc-card" data-reveal>
+        <span class="svc-n">03</span>
+        <span class="svc-quote">"What you cannot see clearly, you cannot lead precisely."</span>
+        <h3>Intelligence Dashboards &amp; Decision Architecture</h3>
+        <p>Custom control centers built for founders who need real intelligence, not raw data. Every critical variable visible, every trend interpretable, every decision supported. Your dashboard becomes the command interface of your business.</p>
+      </div>
+      <div class="svc-card" data-reveal>
+        <span class="svc-n">04</span>
+        <span class="svc-quote">"The most valuable thing we can give you is cognitive leverage."</span>
+        <h3>AI Virtual Assistant — The Operational Second-in-Command</h3>
+        <p>A custom AI assistant trained on your business context, communications patterns, offer architecture, and decision framework. It handles the operational cognitive load that consumes founders. Not a chatbot — trained operational intelligence.</p>
+      </div>
+      <div class="svc-card" data-reveal>
+        <span class="svc-n">05</span>
+        <span class="svc-quote">"Visibility without strategy is just noise with a budget."</span>
+        <h3>Digital Marketing Strategy &amp; Positioning</h3>
+        <p>We don't run ads. We architect the market position that makes your message land with precision. Channel selection, content strategy, audience segmentation, messaging hierarchy — every element designed to attract the right clients and qualify the wrong ones out.</p>
+      </div>
+      <div class="svc-card" data-reveal>
+        <span class="svc-n">06</span>
+        <span class="svc-quote">"Growth without guidance is just expensive trial and error."</span>
+        <h3>Sales Counseling, Funnel Mentoring &amp; Business Positioning</h3>
+        <p>Direct work with founders and operators to sharpen sales methodology, close rates, offer structure, and market differentiation. Hands-on, high-context mentoring grounded in real operational experience. This is where strategic partnership becomes personal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     DIFFERENTIATION
+════════════════════════════════════════════ -->
+<section id="differentiation">
+  <div id="differentiation-bg" class="us-section-bg">
+    <div data-us-project="whwOGlfJ5Rz2rHaEUgHl"></div>
+    <div class="us-watermark-cover" aria-hidden="true"></div>
+  </div>
+  <div class="wrap">
+    <div class="diff-grid">
+      <div data-reveal>
+        <span class="eyebrow eyebrow-gold">The Distinction</span>
+        <h2 class="section-headline">You've Worked With Agencies.<br><em>This Is Not That.</em></h2>
+        <p style="margin-top:2rem;">The difference between Schatten and every agency you've hired: we build the systems, we own the outcomes, and we don't leave until it's working.</p>
+        <p>Most agencies are optimized for deliverables. Most consultants are optimized for advice. Schatten is optimized for one thing: the compounding leverage of your specific business.</p>
+      </div>
+      <div class="distinctions" data-reveal>
+        <div class="dist-item"><span class="dist-n">01</span><div><h4>We are architects, not vendors.</h4><p>We don't sell services. We install systems built specifically for your business, your market, and your growth trajectory.</p></div></div>
+        <div class="dist-item"><span class="dist-n">02</span><div><h4>We begin with ROI.</h4><p>Our first mandate: recover and multiply your investment before pursuing expansion. You always know what we build is paying for itself.</p></div></div>
+        <div class="dist-item"><span class="dist-n">03</span><div><h4>We work in depth, not breadth.</h4><p>Limited partners. Full attention. We do not sell volume. We sell results.</p></div></div>
+        <div class="dist-item"><span class="dist-n">04</span><div><h4>We combine strategy and execution.</h4><p>We don't just advise. We build. Strategic vision and operational implementation are inseparable in a Schatten engagement.</p></div></div>
+        <div class="dist-item"><span class="dist-n">05</span><div><h4>We bring AI as infrastructure, not novelty.</h4><p>Not demos. Not experiments. Operationally mature, purpose-configured deployments that run your business.</p></div></div>
+        <div class="dist-item"><span class="dist-n">06</span><div><h4>We move with you, not for you.</h4><p>We build your team's capability alongside the systems. When we finish, your business is more capable — not dependent.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════════ -->
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div data-reveal>
+        <div class="about-frame">
+          <div class="about-placeholder">
+            <svg viewBox="0 0 380 480" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="pgd" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#c4963a" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="#f0eeea" stop-opacity="0.04"/>
+                </linearGradient>
+              </defs>
+              <rect width="380" height="480" fill="url(#pgd)"/>
+              <line x1="190" y1="30" x2="190" y2="450" stroke="#c4963a" stroke-width="0.5" opacity="0.25"/>
+              <line x1="30" y1="240" x2="350" y2="240" stroke="#c4963a" stroke-width="0.5" opacity="0.25"/>
+              <circle cx="190" cy="148" r="72" stroke="#f0eeea" stroke-width="0.8" fill="none" opacity="0.2"/>
+              <path d="M 55 380 Q 95 305 190 295 Q 285 305 325 380" stroke="#f0eeea" stroke-width="0.8" fill="none" opacity="0.18"/>
+              <text x="190" y="162" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-size="54" font-weight="300" fill="#c4963a" opacity="0.45" letter-spacing="0.05em">S</text>
+              <path d="M 22 22 L 22 52 M 22 22 L 52 22" stroke="#c4963a" stroke-width="0.7" opacity="0.35" fill="none"/>
+              <path d="M 358 22 L 358 52 M 358 22 L 328 22" stroke="#c4963a" stroke-width="0.7" opacity="0.35" fill="none"/>
+              <path d="M 22 458 L 22 428 M 22 458 L 52 458" stroke="#c4963a" stroke-width="0.7" opacity="0.35" fill="none"/>
+              <path d="M 358 458 L 358 428 M 358 458 L 328 458" stroke="#c4963a" stroke-width="0.7" opacity="0.35" fill="none"/>
+            </svg>
+          </div>
+          <div class="about-frame-accent"></div>
+        </div>
+        <div class="about-caption">
+          <strong>The Principal</strong>
+          <span>Founder &amp; Principal, Schatten</span>
+        </div>
+      </div>
+
+      <div data-reveal>
+        <span class="eyebrow eyebrow-gold">The Principal</span>
+        <h2 class="section-headline">Built by Someone Who's<br>Been Inside the Machine.</h2>
+        <blockquote class="about-quote">
+          "I built Schatten because I kept seeing the same pattern: capable businesses held back not by effort, but by the absence of precision at the structural level."
+        </blockquote>
+        <p>Schatten was built by someone who has spent years inside growth-stage businesses — not as an advisor looking in, but as an operator rebuilding from within. The pattern was always the same: capable founders, strong products, broken architecture underneath.</p>
+        <p>Every system Schatten installs is grounded in that operational history — not theoretical frameworks, but precision earned through building, failing, and rebuilding in the field. The work is personal because the stakes always are.</p>
+        <p>Schatten accepts a limited number of partners each quarter because this work requires full attention and complete accountability. There is no team between you and the architect.</p>
+        <div class="about-creds">
+          <span class="cred-tag">Operational Systems</span>
+          <span class="cred-tag">AI Infrastructure</span>
+          <span class="cred-tag">Funnel Architecture</span>
+          <span class="cred-tag">Business Positioning</span>
+          <span class="cred-tag">Growth Strategy</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PROOF
+════════════════════════════════════════════ -->
+<section id="proof">
+  <div class="wrap">
+    <div class="section-intro" data-reveal>
+      <span class="eyebrow eyebrow-gold">The Record</span>
+      <h2 class="section-headline">Results Are Not a Promise.<br>They Are a Pattern.</h2>
+      <p style="margin-top:1rem;">Every engagement produces a measurable outcome. Here is what that looks like in practice.</p>
+    </div>
+    <div class="results-grid">
+      <div class="result-card" data-reveal>
+        <span class="result-stat-num">−38%</span>
+        <p>A B2B professional services firm reduced their average sales cycle by <mark>38%</mark> within 90 days of funnel restructuring — without increasing their marketing budget.</p>
+        <span class="result-src">B2B Professional Services · Funnel Restructuring</span>
+      </div>
+      <div class="result-card" data-reveal>
+        <span class="result-stat-num">22 hrs</span>
+        <p>A founder-led consultancy launched a custom AI operational layer that eliminated <mark>22 hours</mark> of weekly cognitive overhead — freeing the principal to operate as a strategist.</p>
+        <span class="result-src">Founder-Led Consultancy · AI Operational Layer</span>
+      </div>
+      <div class="result-card" data-reveal>
+        <span class="result-stat-num">+61%</span>
+        <p>An e-commerce brand repositioned their core offer and increased average order value by <mark>61%</mark> while reducing customer acquisition cost by <mark>29%</mark>.</p>
+        <span class="result-src">E-Commerce · Market Repositioning</span>
+      </div>
+      <div class="result-card" data-reveal>
+        <span class="result-stat-num">$400K</span>
+        <p>A growth-stage agency installed Schatten's dashboard architecture and, for the first time, made a <mark>$400K strategic decision</mark> with full confidence in under two hours.</p>
+        <span class="result-src">Growth-Stage Agency · Dashboard Architecture</span>
+      </div>
+    </div>
+    <div class="case-strip" data-reveal>
+      <div class="cs-card">
+        <span class="cs-tag">B2B Professional Services · Funnel Restructuring</span>
+        <h4>The leaking funnel costing more than it converted</h4>
+        <p class="cs-challenge">Three stages were creating friction — misaligned messaging, a weak proposal process, and no intelligent follow-up. The team was manually chasing deals that should have closed themselves.</p>
+        <div class="cs-result"><span class="cs-result-n">−38%</span><span class="cs-result-l">sales cycle<br>in 90 days</span></div>
+      </div>
+      <div class="cs-card">
+        <span class="cs-tag">Founder-Led Consultancy · AI Layer</span>
+        <h4>The founder trapped inside their own business</h4>
+        <p class="cs-challenge">22+ hours per week on tasks with no strategic value — drafting, responding, reporting. Every hour on operations was an hour not spent on vision and the decisions that move the business.</p>
+        <div class="cs-result"><span class="cs-result-n">22h</span><span class="cs-result-l">overhead eliminated<br>per week</span></div>
+      </div>
+      <div class="cs-card">
+        <span class="cs-tag">Growth-Stage Agency · Dashboard Architecture</span>
+        <h4>The $400K decision they couldn't make without a clear view</h4>
+        <p class="cs-challenge">Fragmented data across five tools. No single view of pipeline health. A major strategic opportunity arose — and without the infrastructure to evaluate it, the decision took weeks and lacked confidence.</p>
+        <div class="cs-result"><span class="cs-result-n">$400K</span><span class="cs-result-l">decision made<br>with confidence</span></div>
+      </div>
+    </div>
+    <div class="authority-pillars" data-reveal>
+      <div class="auth-pillar"><h4>Operational Depth</h4><p>Every engagement grounded in systems thinking. We understand the structural logic of business growth and build to that depth.</p></div>
+      <div class="auth-pillar"><h4>Strategic Precision</h4><p>We do not generalize. Every recommendation, every build, every system is calibrated to the specific dynamics of your business and market.</p></div>
+      <div class="auth-pillar"><h4>AI-Native Execution</h4><p>We are not learning AI tools. We have built and deployed AI operational infrastructure across multiple business contexts. This is our native environment.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════════════════ -->
+<section id="testimonials">
+  <div class="wrap">
+    <div class="section-intro" data-reveal>
+      <span class="eyebrow eyebrow-gold">In Their Words</span>
+      <h2 class="section-headline">What Founders Say<br>After Working With Schatten.</h2>
+    </div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card" data-reveal>
+      <span class="testi-open">"</span>
+      <p class="testi-quote">We'd worked with two agencies before Schatten. Both gave us strategy decks and confident language about what they were going to build. Schatten was the first partner that actually rebuilt the machine. Three months in, our funnel operates at a level we didn't think was achievable without tripling headcount.</p>
+      <span class="testi-result-tag">Sales cycle −38% in 90 days</span>
+      <div class="testi-foot">
+        <div class="testi-avatar"><span class="testi-avatar-i">B2B</span></div>
+        <div><span class="testi-name">CEO, B2B Professional Services</span><span class="testi-role">$2M ARR · Funnel Restructuring</span></div>
+      </div>
+    </div>
+    <div class="testi-card" data-reveal>
+      <span class="testi-open">"</span>
+      <p class="testi-quote">The AI operational layer Schatten installed changed what my days look like. I was spending 22 hours a week on tasks I kept telling myself were necessary. They weren't — they were just unfixed. Now I operate entirely at the level where I actually create value. That's not a small thing. That's the business.</p>
+      <span class="testi-result-tag">22 hours weekly overhead eliminated</span>
+      <div class="testi-foot">
+        <div class="testi-avatar"><span class="testi-avatar-i">FDR</span></div>
+        <div><span class="testi-name">Founder, Consulting Firm</span><span class="testi-role">Principal-Led · AI Operational Layer</span></div>
+      </div>
+    </div>
+    <div class="testi-card" data-reveal>
+      <span class="testi-open">"</span>
+      <p class="testi-quote">The dashboard sounds simple when you describe it. What it actually does is give you the ability to lead instead of react. I made a $400K decision in two hours that would have taken three weeks before — and made it with complete confidence. That one decision paid for the entire engagement.</p>
+      <span class="testi-result-tag">$400K decision in 2 hours</span>
+      <div class="testi-foot">
+        <div class="testi-avatar"><span class="testi-avatar-i">AGY</span></div>
+        <div><span class="testi-name">Managing Partner, Growth-Stage Agency</span><span class="testi-role">45-person team · Dashboard Architecture</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     DIAGNOSTIC TOOL — WOW FEATURE ★
+════════════════════════════════════════════ -->
+<section id="diagnostic">
+  <canvas id="diagnostic-shader" class="section-shader" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="diag-head" data-reveal>
+      <span class="eyebrow eyebrow-gold">Free Architecture Audit</span>
+      <h2 class="section-headline">Answer 3 Questions.<br>See Exactly Where Your Business Is Losing Money.</h2>
+      <p style="margin-top:1rem;max-width:52ch;">Most founders are surprised by their score. Move the sliders to see the architectural gaps that are quietly costing you revenue every month — and what it would take to close them.</p>
+    </div>
+
+    <div class="diag-grid">
+      <!-- Sliders -->
+      <div class="diag-sliders">
+
+        <div class="diag-slider-item">
+          <div class="diag-slider-head">
+            <span class="diag-q">What percentage of your leads convert to clients?</span>
+            <span class="diag-val" id="diag-v1">10<span class="diag-val-unit">%</span></span>
+          </div>
+          <div class="diag-track-wrap">
+            <div class="diag-track-fill" id="diag-fill1" style="width:20%"></div>
+            <input type="range" id="diag-s1" min="0" max="50" value="10" step="1">
+          </div>
+        </div>
+
+        <div class="diag-slider-item">
+          <div class="diag-slider-head">
+            <span class="diag-q">How many hours per week do you spend on non-strategic tasks?</span>
+            <span class="diag-val" id="diag-v2">20<span class="diag-val-unit">h</span></span>
+          </div>
+          <div class="diag-track-wrap">
+            <div class="diag-track-fill" id="diag-fill2" style="width:50%"></div>
+            <input type="range" id="diag-s2" min="0" max="40" value="20" step="1">
+          </div>
+        </div>
+
+        <div class="diag-slider-item">
+          <div class="diag-slider-head">
+            <span class="diag-q">How clearly can you see your business performance in real time?</span>
+            <span class="diag-val" id="diag-v3">5<span class="diag-val-unit">/10</span></span>
+          </div>
+          <div class="diag-track-wrap">
+            <div class="diag-track-fill" id="diag-fill3" style="width:44%"></div>
+            <input type="range" id="diag-s3" min="1" max="10" value="5" step="1">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Results gauges -->
+      <div class="diag-results">
+        <div class="diag-gauges">
+          <div class="gauge-wrap gauge-current">
+            <span class="gauge-label-top">Current Score</span>
+            <svg class="gauge-svg" viewBox="0 0 200 115" xmlns="http://www.w3.org/2000/svg">
+              <path class="gauge-bg-arc" d="M 18 100 A 82 82 0 0 1 182 100"/>
+              <path class="gauge-arc" id="gauge-arc-current"
+                d="M 18 100 A 82 82 0 0 1 182 100"
+                stroke-dasharray="257.6" stroke-dashoffset="180"/>
+              <text class="gauge-num" id="gauge-num-current" x="100" y="82">3.7</text>
+              <text class="gauge-sub-text" x="100" y="100">out of 10</text>
+            </svg>
+          </div>
+          <div class="gauge-wrap gauge-schatten">
+            <span class="gauge-label-top">With Schatten</span>
+            <svg class="gauge-svg" viewBox="0 0 200 115" xmlns="http://www.w3.org/2000/svg">
+              <path class="gauge-bg-arc" d="M 18 100 A 82 82 0 0 1 182 100"/>
+              <path class="gauge-arc" id="gauge-arc-schatten"
+                d="M 18 100 A 82 82 0 0 1 182 100"
+                stroke-dasharray="257.6" stroke-dashoffset="51.5"/>
+              <text class="gauge-num" id="gauge-num-schatten" x="100" y="82">8.0</text>
+              <text class="gauge-sub-text" x="100" y="100">projected</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="diag-assessment" id="diag-assessment">
+          Your audit reveals significant architectural gaps that are directly costing you revenue and time. This is not a performance problem — it is a structural one. The good news: structural problems have structural solutions. A Schatten engagement addresses this at the foundational level and creates measurable leverage within 90 days.
+        </div>
+
+        <div style="text-align:center;">
+          <span class="btn-magnetic">
+            <a href="#contact" class="btn btn-primary">Claim Your Free 30-Minute Diagnostic Call — Only 2 Spots Left</a>
+          </span>
+          <span class="diag-cta-note">We'll walk through your exact audit results on the call. No pitch. No obligation.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     CONTACT FORM
+════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div data-reveal>
+        <span class="eyebrow eyebrow-gold">The Invitation</span>
+        <h2 class="section-headline">Ready to Stop Leaving Money<br><em>in Broken Systems?</em></h2>
+        <p style="margin-top:2rem;">We take six engagements per quarter — maximum. This form is a qualification screen, not a contact form. It exists to protect your time and ours: if we can't genuinely move the needle for your business, we'll tell you directly.</p>
+        <p>If there's a fit, you'll hear from us within 48 hours to schedule a focused 30-minute diagnostic. No pitch decks. No pressure. Just a clear-eyed look at what's costing you money and whether we're the right team to fix it.</p>
+        <div class="contact-details">
+          <div class="cd-row">
+            <span class="cd-label">Response</span>
+            <span class="cd-val">Within 48 hours of submission</span>
+          </div>
+          <div class="cd-row">
+            <span class="cd-label">Format</span>
+            <span class="cd-val">30-minute diagnostic — no obligation</span>
+          </div>
+          <div class="cd-row">
+            <span class="cd-label">Availability</span>
+            <span class="cd-val">Q2 2026 · <strong style="color:var(--gold)">2 of 6 slots remaining</strong></span>
+          </div>
+          <div class="cd-row">
+            <span class="cd-label">Email</span>
+            <span class="cd-val">hello@schatten.co</span>
+          </div>
+        </div>
+      </div>
+
+      <div data-reveal>
+        <form class="contact-form" id="contact-form" novalidate>
+          <div class="form-row">
+            <label for="cf-name">Your name</label>
+            <input type="text" id="cf-name" name="name" placeholder="First and last name" required>
+          </div>
+          <div class="form-row">
+            <label for="cf-company">Company &amp; role</label>
+            <input type="text" id="cf-company" name="company" placeholder="e.g. Acme Inc — Founder & CEO" required>
+          </div>
+          <div class="form-row">
+            <label for="cf-revenue">Current annual revenue <span style="color:var(--chalk-mute);font-size:0.75rem;">(minimum $500K to qualify)</span></label>
+            <select id="cf-revenue" name="revenue" required>
+              <option value="" disabled selected>Select a range</option>
+              <option>Under $500K (not yet a fit — apply when you get there)</option>
+              <option>$500K – $1M</option>
+              <option>$1M – $5M</option>
+              <option>$5M – $10M</option>
+              <option>$10M+</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="cf-friction">Primary friction point</label>
+            <select id="cf-friction" name="friction" required>
+              <option value="" disabled selected>Where is the system breaking?</option>
+              <option>Funnel leaking — leads not converting</option>
+              <option>Operations — manual processes, no automation</option>
+              <option>Visibility — no real-time decision intelligence</option>
+              <option>Positioning — unclear differentiation</option>
+              <option>All of the above</option>
+            </select>
+          </div>
+          <div class="form-row" style="border-bottom:1px solid var(--border);">
+            <label for="cf-goal">What does success look like in 90 days — and are you the sole decision-maker for this investment?</label>
+            <textarea id="cf-goal" name="goal" placeholder="Be specific: what numbers move, what stops breaking, what does your week look like? Also note: if others need to approve this investment, tell us who and how that process works." required></textarea>
+          </div>
+          <div class="form-actions">
+            <p class="form-note">Every application is reviewed personally. If you qualify, you'll hear back within 48 hours — not a newsletter, not a sequence. A direct response.</p>
+            <button type="submit" class="btn-submit">Send My Application — Claim One of 2 Remaining Spots</button>
+          </div>
+        </form>
+        <div class="form-success" id="form-success">
+          <div class="success-icon"></div>
+          <h3>Application received.</h3>
+          <p>We review every submission personally. If the fit is right, you'll hear from us within 48 hours to schedule a diagnostic conversation.</p>
+          <p style="margin-top:0.5rem;font-size:0.78rem;color:var(--chalk-sub);">The fact that you applied means you're already closer than most founders ever get.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FAQ
+════════════════════════════════════════════ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-intro" data-reveal>
+      <span class="eyebrow eyebrow-gold">Clarity Before Commitment</span>
+      <h2 class="section-headline">Questions Founders Ask<br>Before Applying.</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item" data-reveal>
+        <button class="faq-btn" aria-expanded="false">What does a Schatten engagement cost?<span class="faq-icon"></span></button>
+        <div class="faq-ans"><p>Engagements are structured around outcomes, not hours. Investment varies depending on scope and business size. Every engagement begins with a diagnostic phase to ensure investment is calibrated precisely to your leverage opportunity. We discuss investment after we understand your situation.</p></div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-btn" aria-expanded="false">How long does a typical engagement last?<span class="faq-icon"></span></button>
+        <div class="faq-ans"><p>Most engagements run 90 days for the core installation — Reconnaissance through Installation — followed by an optional Compounding phase. Some partners engage us on a longer-term strategic basis. Timeline is always tied to outcomes, not arbitrary project lengths.</p></div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-btn" aria-expanded="false">Who is Schatten built for?<span class="faq-icon"></span></button>
+        <div class="faq-ans"><p>Founders and operators of growth-stage businesses — typically generating $500K to $10M in annual revenue — who have proven their model and are ready to engineer the architecture that scales it. We are not the right partner for businesses in early ideation or those not yet generating consistent revenue.</p></div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-btn" aria-expanded="false">What AI tools and platforms do you work with?<span class="faq-icon"></span></button>
+        <div class="faq-ans"><p>We are platform-agnostic. We select and configure the right tools for your specific operational context — not to retrofit your business to a preferred platform. We work with the full AI infrastructure landscape: custom GPT deployments, automation platforms (Make, Zapier, n8n), CRM intelligence, and custom-built solutions.</p></div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-btn" aria-expanded="false">How does the ROI-first mandate actually work?<span class="faq-icon"></span></button>
+        <div class="faq-ans"><p>Before expansion phases, we establish a clear ROI baseline: the measurable impact of our initial installation. If foundational systems are not demonstrably recovering your investment — through increased conversions, reduced overhead, or accelerated deal velocity — we do not move forward without resolving that gap first.</p></div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-btn" aria-expanded="false">What makes Schatten different from a fractional CMO or COO?<span class="faq-icon"></span></button>
+        <div class="faq-ans"><p>A fractional executive brings expertise and perspective. Schatten brings architecture and execution. We don't just advise — we build the systems, install the automations, deploy the AI infrastructure, and restructure your conversion logic. When we're done, the capability is in the organization, not dependent on our ongoing presence.</p></div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-btn" aria-expanded="false">How do I know if now is the right moment?<span class="faq-icon"></span></button>
+        <div class="faq-ans"><p>If your business makes money, but something's clearly not working — and you've been putting off fixing it — now is the right moment. The longer the broken architecture runs, the more it costs.</p></div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-btn" aria-expanded="false">How do I begin?<span class="faq-icon"></span></button>
+        <div class="faq-ans"><p>Submit the application above. We review personally and respond within 48 hours to schedule a diagnostic conversation — focused, no-pressure, designed to understand your architecture and determine whether a Schatten engagement is the right fit.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FINAL CTA
+════════════════════════════════════════════ -->
+<section id="cta-final">
+  <div id="brightness-container" aria-hidden="true"></div>
+  <div class="cta-bg-char" aria-hidden="true">S</div>
+  <div class="wrap">
+    <div data-reveal style="text-align:center;">
+      <div class="orn-line" style="justify-content:center;margin-bottom:2.5rem;">
+        <div class="orn-diamond"></div>
+      </div>
+      <h2>Two Spots Left This Quarter.<br>One Conversation to See If There's a Fit.</h2>
+      <p>One 30-minute call. No pitch decks. No pressure. We look at your architecture, you look at our process, and we decide together. If there's no fit, we'll tell you directly. If there is — we start immediately.</p>
+      <span class="btn-magnetic" style="display:inline-block;">
+        <a href="#contact" class="btn btn-outline">Apply for Your Diagnostic Call — 2 Spots Left This Quarter</a>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer>
+  <span class="footer-logo">Schatten</span>
+  <ul class="footer-nav">
+    <li><a href="#solution">Approach</a></li>
+    <li><a href="#offer">System</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#proof">Results</a></li>
+    <li><a href="#contact">Apply</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 Schatten. All rights reserved.</span>
+</footer>
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── HELPERS ───────────────────────────────── */
+function splitIntoChars(el) {
+  const originalText = el.textContent;
+  el.setAttribute('aria-label', originalText);
+  el.textContent = '';
+
+  originalText.split('').forEach(char => {
+    if (char === '\n') {
+      el.appendChild(document.createElement('br'));
+      return;
+    }
+    const s = document.createElement('span');
+    s.className = 'char';
+    s.style.display = 'inline-block';
+    s.textContent = char === ' ' ? '\u00A0' : char;
+    el.appendChild(s);
+  });
+}
+
+/* ── PRELOADER ─────────────────────────────── */
+(function initPreloader() {
+  document.body.style.overflow = 'hidden';
+
+  // Render wordmark
+  const wordmark = document.getElementById('preloader-wordmark');
+  'SCHATTEN'.split('').forEach(c => {
+    const s = document.createElement('span');
+    s.className = 'preloader-char';
+    s.textContent = c;
+    wordmark.appendChild(s);
+  });
+
+  function dismissPreloader() {
+    gsap.to('#preloader', {
+      opacity: 0, duration: 0.6, ease: 'power2.inOut',
+      onComplete() {
+        document.getElementById('preloader').style.display = 'none';
+        document.body.style.overflow = '';
+        initLenis();
+        initHeroAnimation();
+        initScrollAnimations();
+        initCounters();
+        initMagneticButtons();
+        initOfferScroll();
+        initOrbitalTimeline();
+      }
+    });
+  }
+
+  var preloaderAnimDone = false;
+  var katanaFramesDone  = false;
+
+  function tryDismiss() {
+    if (preloaderAnimDone && katanaFramesDone) dismissPreloader();
+  }
+
+  window.addEventListener('katana-frames-loaded', function() {
+    katanaFramesDone = true;
+    tryDismiss();
+  });
+
+  // Fallback: if frames take more than 6s, dismiss anyway
+  setTimeout(function() {
+    katanaFramesDone = true;
+    tryDismiss();
+  }, 6000);
+
+  const tl = gsap.timeline({
+    onComplete() {
+      preloaderAnimDone = true;
+      tryDismiss();
+    }
+  });
+
+  tl
+    .to('.preloader-path', {
+      strokeDashoffset: 0,
+      duration: 1.4,
+      ease: 'power2.inOut'
+    })
+    .to('.preloader-char', {
+      y: 0, opacity: 1,
+      stagger: 0.05,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, '-=0.6')
+    .to({}, { duration: 0.35 }); // hold — bar is driven by real frame-load progress
+})();
+
+/* ── LENIS SMOOTH SCROLL ───────────────────── */
+let lenis;
+function initLenis() {
+  lenis = new Lenis({
+    duration: 1.25,
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  lenis.on('scroll', ScrollTrigger.update);
+}
+
+/* ── CURSOR ────────────────────────────────── */
+(function initCursor() {
+  const dot  = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  if (!dot || !ring) return;
+
+  // Create ink trail dots
+  const trailCount = 8;
+  const trail = [];
+  for (let i = 0; i < trailCount; i++) {
+    const t = document.createElement('div');
+    t.className = 'cursor-trail';
+    t.style.width = t.style.height = (3 - i * 0.25) + 'px';
+    document.body.appendChild(t);
+    trail.push({ el: t, x: 0, y: 0 });
+  }
+
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+  });
+
+  let frame = 0;
+  (function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+
+    // Trail animation — shift positions
+    if (frame % 2 === 0) {
+      for (let i = trail.length - 1; i > 0; i--) {
+        trail[i].x = trail[i-1].x;
+        trail[i].y = trail[i-1].y;
+        trail[i].el.style.left = trail[i].x + 'px';
+        trail[i].el.style.top  = trail[i].y + 'px';
+      }
+      trail[0].x = mx;
+      trail[0].y = my;
+    }
+    frame++;
+
+    // Fade trail based on distance from head
+    trail.forEach((t, i) => {
+      const dist = Math.hypot(t.x - mx, t.y - my);
+      const alpha = Math.max(0, 0.22 - i * 0.026 - dist * 0.002);
+      t.el.style.opacity = alpha;
+    });
+
+    requestAnimationFrame(animateRing);
+  })();
+})();
+
+/* ── SCROLL PROGRESS ───────────────────────── */
+const progressEl = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  progressEl.style.width = pct + '%';
+}, { passive: true });
+
+/* ── NAV COMPACT ───────────────────────────── */
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('compact', window.scrollY > 80);
+}, { passive: true });
+
+/* ── MOBILE MENU ───────────────────────────── */
+const hamburger  = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+  mobileMenu.setAttribute('aria-hidden', !open);
+});
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+/* ── HERO ENTRANCE ANIMATION ──────────────── */
+function initHeroAnimation() {
+  // Split hero headline into lines for animation
+  const hl = document.getElementById('hero-hl');
+  if (hl) {
+    const parts = hl.innerHTML.split(/<br\s*\/?>/i);
+    hl.innerHTML = parts.map(line =>
+      `<span class="hl-line" style="display:block;overflow:hidden;"><span class="hl-inner" style="display:block;">${line.trim()}</span></span>`
+    ).join('');
+  }
+
+  const tl = gsap.timeline({ delay: 0.1 });
+
+  tl
+    .from('#nav', { y: -24, opacity: 0, duration: 0.8, ease: 'power3.out' })
+    .from('#hero-eyebrow', { y: 16, opacity: 0, duration: 0.65, ease: 'power2.out' }, '-=0.5')
+    .from('#hero-hl .hl-inner', {
+      y: 60, opacity: 0,
+      stagger: 0.15,
+      duration: 0.75,
+      ease: 'power3.out'
+    }, '-=0.35')
+    .from('#hero-body', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.45')
+    .from('#hero-qualifier', { y: 16, opacity: 0, duration: 0.5, ease: 'power2.out' }, '-=0.4')
+    .from('#hero-scarcity', { y: 12, opacity: 0, duration: 0.45, ease: 'power2.out' }, '-=0.35')
+    .from('#hero-actions', { y: 16, opacity: 0, duration: 0.5, ease: 'power2.out' }, '-=0.3')
+    .from('.stats-strip', { y: 24, opacity: 0, duration: 0.65, ease: 'power2.out' }, '-=0.6');
+
+  // Hero parallax
+  const heroBg = document.getElementById('hero-bg');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY < window.innerHeight * 1.5) {
+      heroBg.style.transform = `translateY(${window.scrollY * 0.25}px)`;
+    }
+  }, { passive: true });
+}
+
+/* ── SCROLL ANIMATIONS ─────────────────────── */
+function initScrollAnimations() {
+  // Generic data-reveal elements
+  gsap.utils.toArray('[data-reveal]').forEach((el, i) => {
+    gsap.from(el, {
+      y: 38,
+      opacity: 0,
+      duration: 1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 87%',
+        once: true,
+      }
+    });
+  });
+
+  // Section headline animations — whole-element slide-up
+  gsap.utils.toArray('h2.section-headline').forEach(el => {
+    gsap.from(el, {
+      y: 32,
+      opacity: 0,
+      duration: 0.85,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        once: true,
+      }
+    });
+  });
+
+  // Benefit and service cards stagger
+  ['#benefits .benefit-card', '#services .svc-card'].forEach(sel => {
+    const cards = gsap.utils.toArray(sel);
+    cards.forEach((card, i) => {
+      gsap.from(card, {
+        y: 40,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 88%',
+          once: true,
+        },
+        delay: (i % 3) * 0.08
+      });
+    });
+  });
+
+  // Phase cards stagger
+  gsap.utils.toArray('.phase').forEach((card, i) => {
+    gsap.from(card, {
+      y: 32,
+      opacity: 0,
+      duration: 0.85,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: card, start: 'top 87%', once: true },
+      delay: i * 0.1
+    });
+  });
+
+  // Pillar items stagger
+  gsap.utils.toArray('.pillar').forEach((p, i) => {
+    gsap.from(p, {
+      x: -20,
+      opacity: 0,
+      duration: 0.7,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: p, start: 'top 90%', once: true },
+      delay: i * 0.06
+    });
+  });
+
+  // Distinction items stagger
+  gsap.utils.toArray('.dist-item').forEach((d, i) => {
+    gsap.from(d, {
+      x: 20,
+      opacity: 0,
+      duration: 0.65,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: d, start: 'top 90%', once: true },
+      delay: i * 0.05
+    });
+  });
+
+  // Result cards
+  gsap.utils.toArray('.result-card').forEach((c, i) => {
+    gsap.from(c, {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: c, start: 'top 88%', once: true },
+      delay: (i % 2) * 0.12
+    });
+  });
+
+  // Testi cards
+  gsap.utils.toArray('.testi-card').forEach((c, i) => {
+    gsap.from(c, {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: c, start: 'top 88%', once: true },
+      delay: i * 0.1
+    });
+  });
+}
+
+/* ── STAT COUNTERS ─────────────────────────── */
+function initCounters() {
+  const counters = document.querySelectorAll('.stat-counter');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      obs.unobserve(e.target);
+      const target = parseInt(e.target.dataset.target);
+      const duration = 1600;
+      const start = performance.now();
+      (function step(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        e.target.textContent = Math.floor(eased * target);
+        if (progress < 1) requestAnimationFrame(step);
+        else e.target.textContent = target;
+      })(performance.now());
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => obs.observe(c));
+}
+
+/* ── MAGNETIC BUTTONS ──────────────────────── */
+function initMagneticButtons() {
+  document.querySelectorAll('.btn-magnetic').forEach(wrap => {
+    const btn = wrap.querySelector('.btn, a, button') || wrap;
+
+    wrap.addEventListener('mousemove', e => {
+      const rect = wrap.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width  / 2) * 0.32;
+      const y = (e.clientY - rect.top  - rect.height / 2) * 0.32;
+      gsap.to(btn, { x, y, duration: 0.5, ease: 'power2.out' });
+      gsap.to(wrap, { x: x * 0.15, y: y * 0.15, duration: 0.5, ease: 'power2.out' });
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      gsap.to([btn, wrap], { x: 0, y: 0, duration: 0.75, ease: 'elastic.out(1, 0.5)' });
+    });
+  });
+}
+
+/* ── OFFER HORIZONTAL SCROLL ───────────────── */
+function initOfferScroll() {
+  const track    = document.getElementById('offer-track');
+  const viewport = document.getElementById('offer-viewport');
+  const fillBar  = document.getElementById('offer-scroll-fill');
+  if (!track) return;
+
+  // Manual drag-to-scroll on desktop
+  let isDragging = false, startX, scrollLeft;
+
+  viewport.addEventListener('mousedown', e => {
+    isDragging = true;
+    viewport.style.cursor = 'grabbing';
+    startX = e.pageX - viewport.offsetLeft;
+    scrollLeft = viewport.scrollLeft;
+  });
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    viewport.style.cursor = '';
+  });
+  viewport.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - viewport.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    viewport.scrollLeft = scrollLeft - walk;
+  });
+
+  // Touch scroll
+  let touchStartX = 0, touchScrollLeft = 0;
+  viewport.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchScrollLeft = viewport.scrollLeft;
+  }, { passive: true });
+  viewport.addEventListener('touchmove', e => {
+    const diff = touchStartX - e.touches[0].clientX;
+    viewport.scrollLeft = touchScrollLeft + diff;
+  }, { passive: true });
+
+  // Scroll progress fill
+  viewport.addEventListener('scroll', () => {
+    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+    const pct = (viewport.scrollLeft / maxScroll) * 100;
+    if (fillBar) fillBar.style.width = pct + '%';
+  }, { passive: true });
+
+  // Remove overflow hidden to allow scroll
+  viewport.style.overflowX = 'auto';
+  viewport.style.overflowY = 'hidden';
+  viewport.style.scrollbarWidth = 'none';
+  viewport.style.webkitOverflowScrolling = 'touch';
+  viewport.style.cursor = 'grab';
+  // Hide scrollbar
+  const style = document.createElement('style');
+  style.textContent = '#offer-viewport::-webkit-scrollbar { display: none; }';
+  document.head.appendChild(style);
+}
+
+/* ── FAQ ACCORDION ─────────────────────────── */
+document.querySelectorAll('.faq-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item   = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+
+    document.querySelectorAll('.faq-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-btn').setAttribute('aria-expanded', 'false');
+    });
+
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+/* ── SMOOTH ANCHOR SCROLL ──────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 80;
+      if (lenis) lenis.scrollTo(target, { offset: -80, duration: 1.4 });
+      else window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
+/* ── CONTACT FORM ──────────────────────────── */
+const contactForm = document.getElementById('contact-form');
+const formSuccess = document.getElementById('form-success');
+
+contactForm.addEventListener('submit', e => {
+  e.preventDefault();
+
+  let valid = true;
+  contactForm.querySelectorAll('[required]').forEach(f => {
+    if (!f.value.trim()) {
+      valid = false;
+      gsap.to(f.closest('.form-row'), {
+        borderColor: 'rgba(196,150,58,0.5)',
+        duration: 0.3,
+        yoyo: true,
+        repeat: 1,
+        onComplete: () => gsap.set(f.closest('.form-row'), { clearProps: 'borderColor' })
+      });
+    }
+  });
+  if (!valid) return;
+
+  const submitBtn = contactForm.querySelector('.btn-submit');
+  submitBtn.textContent = 'Sending…';
+  gsap.to(submitBtn, { opacity: 0.6, duration: 0.3 });
+
+  setTimeout(() => {
+    gsap.to(contactForm, { opacity: 0, y: -10, duration: 0.4, ease: 'power2.in',
+      onComplete() {
+        contactForm.style.display = 'none';
+        formSuccess.classList.add('show');
+        gsap.from(formSuccess, { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' });
+        formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }, 1200);
+});
+
+/* ── DIAGNOSTIC TOOL ───────────────────────── */
+(function initDiagnostic() {
+  const s1 = document.getElementById('diag-s1');
+  const s2 = document.getElementById('diag-s2');
+  const s3 = document.getElementById('diag-s3');
+  if (!s1) return;
+
+  const ARC_LEN = 257.6; // π × 82
+
+  function setGauge(arcId, numId, score) {
+    const arc = document.getElementById(arcId);
+    const num = document.getElementById(numId);
+    if (!arc || !num) return;
+    const offset = ARC_LEN * (1 - Math.min(score, 10) / 10);
+    gsap.to(arc, { strokeDashoffset: offset, duration: 0.9, ease: 'power2.out' });
+    const current = parseFloat(num.textContent) || 0;
+    gsap.to({ v: current }, {
+      v: score,
+      duration: 0.9,
+      ease: 'power2.out',
+      onUpdate() { num.textContent = this.targets()[0].v.toFixed(1); }
+    });
+  }
+
+  function computeScore(convRate, hours, visibility) {
+    let c = convRate  < 10 ? 2 : convRate  < 20 ? 4 : convRate  < 35 ? 6.5 : 8.5;
+    let h = hours     > 25 ? 2 : hours     > 15 ? 4 : hours     > 5  ? 7   : 9;
+    let v = visibility;
+    return (c + h + v) / 3;
+  }
+
+  const assessments = {
+    low:  "Your architecture has significant structural gaps directly limiting your revenue and time. The friction you experience daily is not incidental — it is architectural. A Schatten engagement would address this at the foundational level and create measurable leverage within 90 days.",
+    mid:  "Your architecture has some solid components, but critical gaps are costing you measurable revenue and time. There's meaningful leverage available at the system level that your current setup isn't capturing. A focused Schatten engagement would target precisely these gaps.",
+    high: "You're operating with above-average architectural clarity. A Schatten engagement would focus on the precision gaps — the specific points where your system loses leverage — and compound what's already working. The ROI at this stage is in optimization, not reconstruction."
+  };
+
+  function update() {
+    const conv = parseInt(s1.value);
+    const hrs  = parseInt(s2.value);
+    const vis  = parseInt(s3.value);
+
+    // Update displayed values
+    document.getElementById('diag-v1').innerHTML = `${conv}<span class="diag-val-unit">%</span>`;
+    document.getElementById('diag-v2').innerHTML = `${hrs}<span class="diag-val-unit">h</span>`;
+    document.getElementById('diag-v3').innerHTML = `${vis}<span class="diag-val-unit">/10</span>`;
+
+    // Update track fills
+    document.getElementById('diag-fill1').style.width = (conv / 50  * 100) + '%';
+    document.getElementById('diag-fill2').style.width = (hrs  / 40  * 100) + '%';
+    document.getElementById('diag-fill3').style.width = ((vis - 1) / 9 * 100) + '%';
+
+    // Compute scores
+    const current   = Math.round(computeScore(conv, hrs, vis) * 10) / 10;
+    const projected = Math.min(10, Math.round((current + 3.5) * 10) / 10);
+
+    setGauge('gauge-arc-current',  'gauge-num-current',  current);
+    setGauge('gauge-arc-schatten', 'gauge-num-schatten', projected);
+
+    // Assessment text
+    const assessEl = document.getElementById('diag-assessment');
+    const key = current < 4 ? 'low' : current < 7 ? 'mid' : 'high';
+    if (assessEl.dataset.lastKey !== key) {
+      assessEl.dataset.lastKey = key;
+      gsap.to(assessEl, { opacity: 0, duration: 0.2, onComplete() {
+        assessEl.textContent = assessments[key];
+        gsap.to(assessEl, { opacity: 1, duration: 0.35 });
+      }});
+    }
+  }
+
+  [s1, s2, s3].forEach(s => s.addEventListener('input', update));
+  update(); // initialize
+})();
+
+/* ── CARD HOVER TILT ───────────────────────── */
+document.querySelectorAll('.benefit-card, .svc-card, .result-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - 0.5;
+    const y = (e.clientY - r.top)  / r.height - 0.5;
+    gsap.to(card, {
+      rotationY: x * 4,
+      rotationX: -y * 4,
+      z: 6,
+      duration: 0.5,
+      ease: 'power2.out',
+      transformPerspective: 700,
+      transformOrigin: '50% 50%'
+    });
+  });
+  card.addEventListener('mouseleave', () => {
+    gsap.to(card, {
+      rotationY: 0, rotationX: 0, z: 0,
+      duration: 0.8, ease: 'elastic.out(1, 0.4)',
+      transformPerspective: 700
+    });
+  });
+});
+
+/* ── SHADER ANIMATION (raw WebGL, no dependencies) ── */
+(function () {
+  var mount = document.getElementById('shader-mount');
+  var hero  = document.getElementById('hero');
+  if (!mount || !hero) return;
+
+  var canvas = document.createElement('canvas');
+  canvas.style.cssText = 'display:block;width:100%;height:100%;opacity:0.22;mix-blend-mode:screen;';
+  mount.appendChild(canvas);
+
+  var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+
+  var VS = [
+    'attribute vec2 a_pos;',
+    'void main(){gl_Position=vec4(a_pos,0.0,1.0);}'
+  ].join('\n');
+
+  var FS = [
+    'precision highp float;',
+    'uniform vec2  u_res;',
+    'uniform float u_time;',
+    'void main(void){',
+    '  vec2 uv=(gl_FragCoord.xy*2.0-u_res)/min(u_res.x,u_res.y);',
+    '  float t=u_time*0.05;',
+    '  float lw=0.002;',
+    '  vec3 col=vec3(0.0);',
+    '  for(int j=0;j<3;j++){',
+    '    for(int i=0;i<5;i++){',
+    '      col[j]+=lw*float(i*i)/abs(',
+    '        fract(t-0.01*float(j)+float(i)*0.01)*5.0',
+    '        -length(uv)',
+    '        +mod(uv.x+uv.y,0.2)',
+    '      );',
+    '    }',
+    '  }',
+    '  vec3 gold =vec3(0.769,0.588,0.227);',
+    '  vec3 chalk=vec3(0.941,0.933,0.918);',
+    '  float lum=(col.r+col.g+col.b)/3.0;',
+    '  vec3 out3=mix(gold,chalk,clamp(lum*0.35,0.0,1.0))*col*3.5;',
+    '  gl_FragColor=vec4(out3,1.0);',
+    '}'
+  ].join('\n');
+
+  function compileShader(src, type) {
+    var s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+
+  var prog = gl.createProgram();
+  gl.attachShader(prog, compileShader(VS, gl.VERTEX_SHADER));
+  gl.attachShader(prog, compileShader(FS, gl.FRAGMENT_SHADER));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  // Full-screen quad
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  var aPos = gl.getAttribLocation(prog, 'a_pos');
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  var uRes  = gl.getUniformLocation(prog, 'u_res');
+  var uTime = gl.getUniformLocation(prog, 'u_time');
+  var time  = 1.0;
+
+  function resize() {
+    var w = hero.offsetWidth  || window.innerWidth;
+    var h = hero.offsetHeight || window.innerHeight;
+    canvas.width  = Math.floor(w * Math.min(devicePixelRatio, 2));
+    canvas.height = Math.floor(h * Math.min(devicePixelRatio, 2));
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.useProgram(prog);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  (function loop() {
+    requestAnimationFrame(loop);
+    time += 0.05;
+    gl.uniform1f(uTime, time);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  })();
+})();
+
+/* ── RADIAL ORBITAL TIMELINE ────────────────── */
+function initOrbitalTimeline() {
+  const stage = document.getElementById('orbital-stage');
+  if (!stage) return;
+
+  // Schatten service data
+  const nodes = [
+    {
+      id: 0, icon: '⬡', label: 'Funnel',
+      status: 'Core System',
+      title: 'Funnel Architecture',
+      body: 'Rebuild your acquisition and conversion funnel from first touchpoint to closed deal. We map every stage, eliminate every leak, and engineer the conversion logic that turns qualified attention into consistent revenue.',
+      energy: 92,
+      relatedIds: [1, 4],
+    },
+    {
+      id: 1, icon: '◈', label: 'AI Layer',
+      status: 'Intelligence',
+      title: 'AI Infrastructure',
+      body: 'Deploy custom AI systems calibrated to your operations — GPT agents for client intake, intelligent lead routing, automated qualification layers, and decision-support tools that make your team faster without adding headcount.',
+      energy: 85,
+      relatedIds: [0, 2, 3],
+    },
+    {
+      id: 2, icon: '⟳', label: 'Automation',
+      status: 'Operations',
+      title: 'Automation Systems',
+      body: 'Eliminate the manual operations that drain time and introduce error. We integrate your platforms, build the operational backbone, and install the triggers and workflows that keep your business running precisely — with or without you in the room.',
+      energy: 88,
+      relatedIds: [1, 3],
+    },
+    {
+      id: 3, icon: '◉', label: 'Dashboard',
+      status: 'Intelligence',
+      title: 'Intelligence Dashboard',
+      body: 'A real-time command centre designed around your specific business model — KPIs, pipeline health, operational signals, and early-warning indicators — so you always know what\'s working, what\'s not, and what to do next.',
+      energy: 78,
+      relatedIds: [1, 2, 5],
+    },
+    {
+      id: 4, icon: '◇', label: 'Positioning',
+      status: 'Strategy',
+      title: 'Strategic Positioning',
+      body: 'Refine your market narrative, pricing architecture, and differentiation strategy to attract the right clients at premium rates. We close the gap between what you do and what the market understands you to do — so your reputation precedes you.',
+      energy: 82,
+      relatedIds: [0, 5],
+    },
+    {
+      id: 5, icon: '↑', label: 'Growth',
+      status: 'Expansion',
+      title: 'Growth Compounding',
+      body: 'After the core architecture is installed and ROI is confirmed, we activate the expansion layer: referral and advocacy systems, upsell architecture, market penetration strategies, and the compounding loops that turn a great quarter into a great year.',
+      energy: 74,
+      relatedIds: [4, 3],
+    },
+  ];
+
+  const TOTAL    = nodes.length;
+  const RADIUS   = 190;
+  const CX       = 250; // stage center X
+  const CY       = 250; // stage center Y
+  let rotAngle   = 0;
+  let rotTimer   = null;
+  let activeId   = null;
+
+  // Create node elements
+  const nodeEls = nodes.map(n => {
+    const el = document.createElement('div');
+    el.className = 'orbital-node';
+    el.dataset.id = n.id;
+    el.innerHTML = `
+      <div class="orbital-node-dot">
+        <span class="orbital-node-icon">${n.icon}</span>
+      </div>
+      <span class="orbital-node-label"></span>
+    `;
+    stage.appendChild(el);
+    return el;
+  });
+
+  // Create connection lines (one per node, drawn from center)
+  const connEls = nodes.map(() => {
+    const el = document.createElement('div');
+    el.className = 'orbital-connection';
+    stage.appendChild(el);
+    return el;
+  });
+
+  function getPos(index, rotation) {
+    const angle = (index / TOTAL) * 360 + rotation;
+    const rad   = angle * Math.PI / 180;
+    return {
+      x: CX + RADIUS * Math.sin(rad),
+      y: CY - RADIUS * Math.cos(rad),
+    };
+  }
+
+  function positionNodes() {
+    nodes.forEach((n, i) => {
+      const pos    = getPos(i, rotAngle);
+      const el     = nodeEls[i];
+      const lbl    = el.querySelector('.orbital-node-label');
+      el.style.left = pos.x + 'px';
+      el.style.top  = pos.y + 'px';
+
+      // Label placement: push away from center
+      const dx   = pos.x - CX;
+      const dy   = pos.y - CY;
+      const dist = 32;
+      const len  = Math.sqrt(dx * dx + dy * dy) || 1;
+      lbl.textContent = n.label;
+      lbl.style.left  = (dist * dx / len) + 'px';
+      lbl.style.top   = (dist * dy / len - 6) + 'px';
+      lbl.style.transform = 'translate(-50%, -50%)';
+
+      // Connection lines
+      const conn = connEls[i];
+      const cx2  = pos.x - CX;
+      const cy2  = pos.y - CY;
+      const length = Math.sqrt(cx2 * cx2 + cy2 * cy2);
+      const angle2  = Math.atan2(cx2, -cy2) * 180 / Math.PI;
+      conn.style.height    = length + 'px';
+      conn.style.transform = `translateX(-0.5px) rotate(${angle2}deg)`;
+    });
+  }
+
+  function startRotation() {
+    if (rotTimer) return;
+    rotTimer = setInterval(() => {
+      rotAngle += 0.3;
+      positionNodes();
+    }, 50);
+  }
+
+  function stopRotation() {
+    clearInterval(rotTimer);
+    rotTimer = null;
+  }
+
+  function showCard(id) {
+    activeId = id;
+    const n = nodes[id];
+    const card = document.getElementById('orbital-card');
+
+    document.getElementById('orbital-card-status').textContent = n.status;
+    document.getElementById('orbital-card-title').textContent  = n.title;
+    document.getElementById('orbital-card-body').textContent   = n.body;
+    document.getElementById('orbital-energy-pct').textContent  = n.energy + '%';
+    document.getElementById('orbital-energy-fill').style.width = '0%';
+    setTimeout(() => {
+      document.getElementById('orbital-energy-fill').style.width = n.energy + '%';
+    }, 50);
+
+    // Related buttons
+    const btns = document.getElementById('orbital-related-btns');
+    btns.innerHTML = '';
+    n.relatedIds.forEach(rid => {
+      const btn = document.createElement('button');
+      btn.className = 'orbital-related-btn';
+      btn.textContent = nodes[rid].title;
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        showCard(rid);
+        activateNode(rid);
+      });
+      btns.appendChild(btn);
+    });
+
+    card.classList.add('show');
+  }
+
+  function hideCard() {
+    document.getElementById('orbital-card').classList.remove('show');
+    activeId = null;
+  }
+
+  function activateNode(id) {
+    // Reset all nodes
+    nodeEls.forEach((el, i) => {
+      el.classList.remove('active', 'related');
+      connEls[i].classList.remove('visible');
+    });
+
+    // Activate clicked
+    nodeEls[id].classList.add('active');
+    connEls[id].classList.add('visible');
+
+    // Mark related
+    nodes[id].relatedIds.forEach(rid => {
+      nodeEls[rid].classList.add('related');
+      connEls[rid].classList.add('visible');
+    });
+  }
+
+  function resetAll() {
+    nodeEls.forEach((el, i) => {
+      el.classList.remove('active', 'related');
+      connEls[i].classList.remove('visible');
+    });
+    hideCard();
+    startRotation();
+  }
+
+  // Event listeners
+  nodeEls.forEach((el, i) => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      stopRotation();
+      activateNode(i);
+      showCard(i);
+    });
+  });
+
+  document.getElementById('orbital-card-close').addEventListener('click', e => {
+    e.stopPropagation();
+    resetAll();
+  });
+
+  stage.addEventListener('click', () => {
+    if (activeId !== null) resetAll();
+  });
+
+  // Init
+  positionNodes();
+  startRotation();
+}
+
+/* ── TEXT SCRAMBLE on hover for eyebrows ───── */
+const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789·—';
+function scrambleText(el) {
+  const original = el.dataset.original || el.textContent;
+  el.dataset.original = original;
+  let iteration = 0;
+  const interval = setInterval(() => {
+    el.textContent = original.split('').map((c, i) => {
+      if (i < iteration) return original[i];
+      if (c === ' ') return ' ';
+      return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+    }).join('');
+    if (iteration >= original.length) clearInterval(interval);
+    iteration += 0.5;
+  }, 30);
+}
+document.querySelectorAll('.eyebrow').forEach(el => {
+  el.addEventListener('mouseenter', () => scrambleText(el));
+});
+</script>
+
+<!-- ════════════════════════════════════════════
+     KATANA FLOW — Canvas Animation Engine
+     Layer 2: position fixed, z-index 2, mix-blend-mode: screen
+     Scroll-driven webp frame sequence (362 frames @ 30fps)
+     Ported from: Prueba Con Eleven Labs/components/ScrollCanvas.tsx
+════════════════════════════════════════════ -->
+<script>
+(function initKatanaCanvas() {
+  'use strict';
+
+  var TOTAL_FRAMES      = 363;
+  var MOBILE_FRAME_SKIP = 2;
+  var FRAME_CONCURRENCY = 20;
+  var LERP_FACTOR       = 0.06;
+  var FRAMES_BASE       = 'Prueba%20Con%20Eleven%20Labs/public/frames/';
+
+  var canvas = document.getElementById('katana-canvas');
+  if (!canvas) return;
+
+  // ── Canvas sizing ───────────────────────────────────────────────────────────
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize() {
+    var cssW = window.innerWidth;
+    var cssH = window.innerHeight;
+    canvas.width  = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    canvas.style.width  = cssW + 'px';
+    canvas.style.height = cssH + 'px';
+    var ctx = canvas.getContext('2d');
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  // ── Frame list ──────────────────────────────────────────────────────────────
+  var isMobile = window.matchMedia('(max-width: 768px)').matches
+              || navigator.maxTouchPoints > 0;
+  var skip         = isMobile ? MOBILE_FRAME_SKIP : 1;
+  var frameNumbers = [];
+  for (var i = 1; i <= TOTAL_FRAMES; i += skip) frameNumbers.push(i);
+
+  // ── Frame cache ─────────────────────────────────────────────────────────────
+  var frameCache = new Map();
+  var loadedCount = 0;
+  var total       = frameNumbers.length;
+  var isLoaded    = false;
+
+  function onFrameLoadProgress(p) {
+    // Drive the existing preloader bar with real load progress
+    var bar = document.getElementById('preloader-bar');
+    if (bar) bar.style.width = Math.round(p * 100) + '%';
+  }
+
+  // ── Concurrent frame loader ─────────────────────────────────────────────────
+  // Uses HTMLImageElement — works on file:// and http:// without CORS issues
+  function loadFramesConcurrent() {
+    var index = 0;
+
+    function worker() {
+      if (index >= total) return;
+      var i       = index++;
+      var frameNum = frameNumbers[i];
+      var padded  = String(frameNum).padStart(4, '0');
+      var img     = new Image();
+
+      function done() {
+        if (img.naturalWidth > 0) frameCache.set(frameNum, img);
+        loadedCount++;
+        onFrameLoadProgress(loadedCount / total);
+        if (loadedCount === total) {
+          isLoaded = true;
+          window.dispatchEvent(new CustomEvent('katana-frames-loaded'));
+        }
+        worker(); // pull next frame
+      }
+
+      img.onload  = done;
+      img.onerror = done; // missing frame — skip gracefully, keep loading
+      img.src = FRAMES_BASE + 'frame_' + padded + '.webp';
+    }
+
+    for (var w = 0; w < FRAME_CONCURRENCY; w++) worker();
+  }
+
+  loadFramesConcurrent();
+
+  // ── Scroll state ────────────────────────────────────────────────────────────
+  var rawProgress    = 0;
+  var smoothProgress = 0;
+  var velocity       = 0;
+  var direction      = 1;
+
+  window.addEventListener('scroll', function () {
+    var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    if (maxScroll <= 0) return;
+    var raw = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+    direction    = raw >= rawProgress ? 1 : -1;
+    velocity     = Math.abs(raw - rawProgress);
+    rawProgress  = raw;
+  }, { passive: true });
+
+  // ── Cover-fit draw ──────────────────────────────────────────────────────────
+  function drawFrame(ctx, img) {
+    var cssW = window.innerWidth;
+    var cssH = window.innerHeight;
+    ctx.clearRect(0, 0, cssW, cssH);
+
+    var srcW = img.naturalWidth;
+    var srcH = img.naturalHeight;
+    if (!srcW || !srcH) return;
+
+    // Cover-fit: scale to fill viewport while preserving aspect ratio
+    var scale  = Math.max(cssW / srcW, cssH / srcH);
+    var drawW  = srcW * scale;
+    var drawH  = srcH * scale;
+    var x      = (cssW - drawW) / 2;
+
+    // Micro-parallax: max ±8px vertical shift based on scroll velocity
+    var parallax = velocity * direction * -800;
+    parallax     = Math.max(-8, Math.min(8, parallax));
+    var y        = (cssH - drawH) / 2 + parallax;
+
+    ctx.drawImage(img, x, y, drawW, drawH);
+  }
+
+  // ── rAF render loop ─────────────────────────────────────────────────────────
+  // Runs independently of scroll events — lerp syncs to browser paint cycle
+  (function render() {
+    requestAnimationFrame(render);
+    if (!isLoaded) return;
+
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Adaptive lerp: catch up faster for large jumps (keyboard, Page Down)
+    var dist   = Math.abs(rawProgress - smoothProgress);
+    var factor = dist > 0.1 ? LERP_FACTOR * 2.5 : LERP_FACTOR;
+    smoothProgress += (rawProgress - smoothProgress) * factor;
+
+    // Map scroll progress → frame index
+    var total2   = frameNumbers.length;
+    var idx      = Math.min(Math.floor(smoothProgress * (total2 - 1)), total2 - 1);
+    var frameNum = frameNumbers[Math.max(0, idx)];
+    var frame    = frameCache.get(frameNum);
+
+    if (frame) drawFrame(ctx, frame);
+  }());
+
+}());
+</script>
+
+<script>
+/* ── Diagnostic shader — WebGL2 Starship (fallingstars) ── */
+(function initDiagnosticShader() {
+  'use strict';
+  var canvas = document.getElementById('diagnostic-shader');
+  if (!canvas) return;
+  var gl = canvas.getContext('webgl2');
+  if (!gl) return;
+
+  var section = canvas.closest('section') || canvas.parentElement;
+
+  // Generate 256x256 RGBA noise texture for iChannel0
+  var noiseData = new Uint8Array(256 * 256 * 4);
+  for (var n = 0; n < noiseData.length; n++) noiseData[n] = Math.floor(Math.random() * 256);
+  var noiseTex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, noiseTex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 256, 0, gl.RGBA, gl.UNSIGNED_BYTE, noiseData);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+  var vsSrc = '#version 300 es\nin vec4 position;\nvoid main(){gl_Position=position;}';
+  var fsSrc = '#version 300 es\n' +
+'precision highp float;\n' +
+'uniform float iTime;\n' +
+'uniform vec2 iResolution;\n' +
+'uniform sampler2D iChannel0;\n' +
+'out vec4 fragColor;\n' +
+'void main(){\n' +
+'  vec2 r=iResolution.xy,\n' +
+'       p=(gl_FragCoord.xy+gl_FragCoord.xy-r)/r.y*mat2(3.,4.,4.,-3.)/1e2;\n' +
+'  vec4 S=vec4(0.0),C=vec4(1.,2.,3.,0.),W;\n' +
+'  for(float t=iTime,T=.1*t+p.y,i=0.;i<50.;i+=1.){\n' +
+'    S+=(cos(W=sin(i)*C)+1.)\n' +
+'       *exp(sin(i+i*T))\n' +
+'       /length(max(p,p/vec2(2.0,texture(iChannel0,p/exp(W.x)+vec2(i,t)/8.).r*40.0)))/1e4;\n' +
+'    p+=.02*cos(i*(C.xz+8.0+i)+T+T);\n' +
+'  }\n' +
+'  fragColor=vec4(tanh((S*S).rgb),1.0);\n' +
+'}';
+
+  function compileShader(type, src) {
+    var sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.error('Diagnostic shader error:', gl.getShaderInfoLog(sh)); }
+    return sh;
+  }
+
+  var prog = gl.createProgram();
+  gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, vsSrc));
+  gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, fsSrc));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error('Diagnostic shader link error:', gl.getProgramInfoLog(prog)); return; }
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,1,-1,-1,1,1,1,-1]), gl.STATIC_DRAW);
+  var pos = gl.getAttribLocation(prog, 'position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+  var uTime = gl.getUniformLocation(prog, 'iTime');
+  var uRes  = gl.getUniformLocation(prog, 'iResolution');
+  var uCh0  = gl.getUniformLocation(prog, 'iChannel0');
+
+  function resize() {
+    var w = section ? section.offsetWidth : window.innerWidth;
+    var h = section ? section.offsetHeight : window.innerHeight;
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+  }
+  resize();
+  var ro = new ResizeObserver(resize);
+  ro.observe(section || canvas);
+
+  var start = performance.now();
+  (function render(now) {
+    requestAnimationFrame(render);
+    gl.useProgram(prog);
+    gl.uniform1f(uTime, (now - start) * 0.001);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, noiseTex);
+    gl.uniform1i(uCh0, 0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }(performance.now()));
+}());
+
+/* ── Solution shader — WebGL2 Starship/Fallingsky (#solution) ── */
+(function initSolutionShader() {
+  'use strict';
+  var canvas = document.getElementById('solution-shader');
+  if (!canvas) return;
+  var gl = canvas.getContext('webgl2');
+  if (!gl) return;
+
+  var section = canvas.closest('section') || canvas.parentElement;
+
+  var noiseData = new Uint8Array(256 * 256 * 4);
+  for (var n = 0; n < noiseData.length; n++) noiseData[n] = Math.floor(Math.random() * 256);
+  var noiseTex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, noiseTex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 256, 0, gl.RGBA, gl.UNSIGNED_BYTE, noiseData);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+  var vsSrc = '#version 300 es\nin vec4 position;\nvoid main(){gl_Position=position;}';
+  var fsSrc = '#version 300 es\n' +
+'precision highp float;\n' +
+'uniform float iTime;\n' +
+'uniform vec2 iResolution;\n' +
+'uniform sampler2D iChannel0;\n' +
+'out vec4 fragColor;\n' +
+'void main(){\n' +
+'  vec2 r=iResolution.xy,\n' +
+'       p=(gl_FragCoord.xy+gl_FragCoord.xy-r)/r.y*mat2(3.,4.,4.,-3.)/1e2;\n' +
+'  vec4 S=vec4(0.0),C=vec4(1.,2.,3.,0.),W;\n' +
+'  for(float t=iTime,T=.1*t+p.y,i=0.;i<50.;i+=1.){\n' +
+'    S+=(cos(W=sin(i)*C)+1.)\n' +
+'       *exp(sin(i+i*T))\n' +
+'       /length(max(p,p/vec2(2.0,texture(iChannel0,p/exp(W.x)+vec2(i,t)/8.).r*40.0)))/1e4;\n' +
+'    p+=.02*cos(i*(C.xz+8.0+i)+T+T);\n' +
+'  }\n' +
+'  fragColor=vec4(tanh((S*S).rgb),1.0);\n' +
+'}';
+
+  function compileShader(type, src) {
+    var sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.error('Solution shader error:', gl.getShaderInfoLog(sh)); }
+    return sh;
+  }
+
+  var prog = gl.createProgram();
+  gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, vsSrc));
+  gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, fsSrc));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error('Solution shader link error:', gl.getProgramInfoLog(prog)); return; }
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,1,-1,-1,1,1,1,-1]), gl.STATIC_DRAW);
+  var pos = gl.getAttribLocation(prog, 'position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+  var uTime = gl.getUniformLocation(prog, 'iTime');
+  var uRes  = gl.getUniformLocation(prog, 'iResolution');
+  var uCh0  = gl.getUniformLocation(prog, 'iChannel0');
+
+  function resize() {
+    var w = section ? section.offsetWidth : window.innerWidth;
+    var h = section ? section.offsetHeight : window.innerHeight;
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+  }
+  resize();
+  var ro = new ResizeObserver(resize);
+  ro.observe(section || canvas);
+
+  var start = performance.now();
+  (function render(now) {
+    requestAnimationFrame(render);
+    gl.useProgram(prog);
+    gl.uniform1f(uTime, (now - start) * 0.001);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, noiseTex);
+    gl.uniform1i(uCh0, 0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }(performance.now()));
+}());
+
+/* ── UnicornStudio bootstrap (endless + perfectproportions) ── */
+(function loadUnicornStudio() {
+  if (window.UnicornStudio) return;
+  window.UnicornStudio = { isInitialized: false };
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.33/dist/unicornStudio.umd.js';
+  s.onload = function() {
+    if (!window.UnicornStudio.isInitialized) {
+      UnicornStudio.init();
+      window.UnicornStudio.isInitialized = true;
+    }
+  };
+  (document.head || document.body).appendChild(s);
+}());
+
+/* ── Brightness particle animation (brightness.txt) ── */
+(function initBrightnessParticles() {
+  var container = document.getElementById('brightness-container');
+  if (!container) return;
+
+  function runSketch() {
+    if (!window.p5) return;
+    var sketch = function(p) {
+      var particles = [];
+      var amount = 2000;
+      var durationShrink = 8, durationGrow = 8, total = 16;
+      var theme = ['#393e46','#00adb5','#393e46','#00adb5','#e6eeef'];
+      var proxy = { progress: 1, val: 0 };
+      var progressTween, interpolator;
+
+      p.setup = function() {
+        var size = p.min(p.windowWidth, p.windowHeight);
+        var cv = p.createCanvas(size, size);
+        cv.parent(container);
+        p.noStroke();
+        try { p.blendMode(p.SCREEN); } catch(e) {}
+
+        progressTween = gsap.to(proxy, { progress: 0, ease: 'none', duration: total, repeat: -1 });
+        interpolator = gsap.timeline({ paused: true })
+          .to(proxy, { val: 1, duration: durationShrink, ease: 'elastic.in(1.5,0.15)' })
+          .to(proxy, { val: 0, duration: durationGrow,   ease: 'back.in(3)' });
+
+        for (var i = 0; i < amount; i++) {
+          particles.push({
+            i:      i / amount,
+            cos:    p.cos(i / amount * p.TWO_PI),
+            sin:    p.sin(i / amount * p.TWO_PI),
+            r:      p.floor(p.random(2, 8)),
+            offset: p.pow(p.random(1, 2), 2.5) * p.random(-0.015, 0.015),
+            color:  p.random(theme)
+          });
+        }
+      };
+
+      p.windowResized = function() {
+        var size = p.min(p.windowWidth, p.windowHeight);
+        p.resizeCanvas(size, size);
+      };
+
+      function onMove(x, y) {
+        var angle = p.atan2(y - p.height / 2, x - p.width / 2);
+        angle = angle < 0 ? angle + p.TWO_PI : angle;
+        progressTween.time(p.abs(angle / p.TWO_PI) * total);
+      }
+      p.mouseMoved = function() { onMove(p.mouseX, p.mouseY); };
+      p.touchMoved = function() {
+        if (p.touches.length) onMove(p.touches[0].x, p.touches[0].y);
+      };
+
+      p.draw = function() {
+        p.clear();
+        for (var i = 0; i < particles.length; i++) {
+          var pt = particles[i];
+          interpolator.progress((proxy.progress + pt.i) % 1);
+          var r = p.width * (0.35 + proxy.val * pt.offset);
+          p.fill(pt.color);
+          p.circle(pt.cos * r + p.width / 2, pt.sin * r + p.width / 2, pt.r);
+        }
+      };
+    };
+    new window.p5(sketch);
+  }
+
+  if (window.p5) {
+    runSketch();
+  } else {
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js';
+    s.onload = runSketch;
+    document.head.appendChild(s);
+  }
+}());
+
+/* ── Remove UnicornStudio watermark ── */
+(function hideUnicornBranding() {
+  function clean() {
+    document.querySelectorAll('[data-us-project]').forEach(function(container) {
+      container.querySelectorAll('*').forEach(function(el) {
+        var text  = (el.textContent || '').toLowerCase();
+        var href  = (el.getAttribute('href')  || '').toLowerCase();
+        var title = (el.getAttribute('title') || '').toLowerCase();
+        if (
+          text.includes('made with') || text.includes('unicorn') ||
+          href.includes('unicorn')   || title.includes('unicorn') ||
+          title.includes('made with')
+        ) {
+          el.style.cssText = 'display:none!important;visibility:hidden!important;opacity:0!important;position:absolute!important;left:-9999px!important;top:-9999px!important;width:0!important;height:0!important;';
+          try { el.remove(); } catch(e) {}
+        }
+      });
+    });
+  }
+
+  // Run immediately, then every 100ms for 15 seconds to catch late injection
+  clean();
+  var iv = setInterval(clean, 100);
+  setTimeout(function() { clearInterval(iv); }, 15000);
+
+  // MutationObserver: catches elements the moment they're inserted
+  var mo = new MutationObserver(clean);
+  function observeContainers() {
+    document.querySelectorAll('[data-us-project]').forEach(function(c) {
+      mo.observe(c, { childList: true, subtree: true });
+    });
+  }
+  observeContainers();
+  // Re-scan once the UnicornStudio script has had time to render
+  setTimeout(function() { clean(); observeContainers(); }, 2000);
+  setTimeout(function() { clean(); }, 5000);
+}());
+
+/* ── Services shader — WebGL2 nebula/clouds (Shaderestrellafugaces) ── */
+(function initServicesShader() {
+  'use strict';
+  var canvas = document.getElementById('services-shader');
+  if (!canvas) return;
+  var gl = canvas.getContext('webgl2');
+  if (!gl) return;
+
+  var section = canvas.closest('section') || canvas.parentElement;
+
+  var vsSrc = '#version 300 es\nprecision highp float;\nin vec4 position;\nvoid main(){gl_Position=position;}';
+  var fsSrc = '#version 300 es\n' +
+'precision highp float;\n' +
+'out vec4 O;\n' +
+'uniform vec2 resolution;\n' +
+'uniform float time;\n' +
+'#define FC gl_FragCoord.xy\n' +
+'#define T time\n' +
+'#define R resolution\n' +
+'#define MN min(R.x,R.y)\n' +
+'float rnd(vec2 p){p=fract(p*vec2(12.9898,78.233));p+=dot(p,p+34.56);return fract(p.x*p.y);}\n' +
+'float noise(in vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f);float a=rnd(i),b=rnd(i+vec2(1,0)),c=rnd(i+vec2(0,1)),d=rnd(i+1.);return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);}\n' +
+'float fbm(vec2 p){float t=.0,a=1.;mat2 m=mat2(1.,-.5,.2,1.2);for(int i=0;i<5;i++){t+=a*noise(p);p*=2.*m;a*=.5;}return t;}\n' +
+'float clouds(vec2 p){float d=1.,t=.0;for(float i=.0;i<3.;i++){float a=d*fbm(i*10.+p.x*.2+.2*(1.+i)*p.y+d+i*i+p);t=mix(t,d,a);d=a;p*=2./(i+1.);}return t;}\n' +
+'void main(void){\n' +
+'  vec2 uv=(FC-.5*R)/MN,st=uv*vec2(2,1);\n' +
+'  vec3 col=vec3(0);\n' +
+'  float bg=clouds(vec2(st.x+T*.5,-st.y));\n' +
+'  uv*=1.-.3*(sin(T*.2)*.5+.5);\n' +
+'  for(float i=1.;i<12.;i++){\n' +
+'    uv+=.1*cos(i*vec2(.1+.01*i,.8)+i*i+T*.5+.1*uv.x);\n' +
+'    vec2 p=uv;\n' +
+'    float d=length(p);\n' +
+'    col+=.00125/d*(cos(sin(i)*vec3(1,2,3))+1.);\n' +
+'    float b=noise(i+p+bg*1.731);\n' +
+'    col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));\n' +
+'    col=mix(col,vec3(bg*.25,bg*.137,bg*.05),d);\n' +
+'  }\n' +
+'  O=vec4(col,1);\n' +
+'}';
+
+  function compile(type, src) {
+    var sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.error('Shader error:', gl.getShaderInfoLog(sh)); }
+    return sh;
+  }
+
+  var prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsSrc));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsSrc));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error('Link error:', gl.getProgramInfoLog(prog)); return; }
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,1,-1,-1,1,1,1,-1]), gl.STATIC_DRAW);
+  var pos = gl.getAttribLocation(prog, 'position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+  var uRes = gl.getUniformLocation(prog, 'resolution');
+  var uTime = gl.getUniformLocation(prog, 'time');
+
+  function resize() {
+    var w = section ? section.offsetWidth : window.innerWidth;
+    var h = section ? section.offsetHeight : window.innerHeight;
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+  }
+  resize();
+  var ro = new ResizeObserver(resize);
+  ro.observe(section || canvas);
+
+  var start = performance.now();
+  (function render(now) {
+    requestAnimationFrame(render);
+    gl.useProgram(prog);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform1f(uTime, (now - start) * 0.001);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }(performance.now()));
+}());
+
+/* ── Orbital shader — WebGL1 mosaic ring lines (Shaderexplicionblanca) ── */
+(function initOrbitalShader() {
+  'use strict';
+  var canvas = document.getElementById('orbital-shader');
+  if (!canvas) return;
+  var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+
+  var section = canvas.closest('section') || canvas.parentElement;
+
+  var vsSrc = 'attribute vec2 a_pos;\nvoid main(){gl_Position=vec4(a_pos,0.0,1.0);}';
+  var fsSrc =
+'#define TWO_PI 6.2831853072\n' +
+'#define PI 3.14159265359\n' +
+'precision highp float;\n' +
+'uniform vec2 resolution;\n' +
+'uniform float time;\n' +
+'float random(in float x){return fract(sin(x)*1e4);}\n' +
+'float random2(vec2 st){return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);}\n' +
+'void main(void){\n' +
+'  vec2 uv=(gl_FragCoord.xy*2.0-resolution.xy)/min(resolution.x,resolution.y);\n' +
+'  vec2 fMosaicScal=vec2(4.0,2.0);\n' +
+'  vec2 vScreenSize=vec2(256.0,256.0);\n' +
+'  uv.x=floor(uv.x*vScreenSize.x/fMosaicScal.x)/(vScreenSize.x/fMosaicScal.x);\n' +
+'  uv.y=floor(uv.y*vScreenSize.y/fMosaicScal.y)/(vScreenSize.y/fMosaicScal.y);\n' +
+'  float t=time*0.06+random(uv.x)*0.4;\n' +
+'  float lineWidth=0.0008;\n' +
+'  vec3 color=vec3(0.0);\n' +
+'  for(int j=0;j<3;j++){\n' +
+'    for(int i=0;i<5;i++){\n' +
+'      color[j]+=lineWidth*float(i*i)/abs(fract(t-0.01*float(j)+float(i)*0.01)*1.0-length(uv));\n' +
+'    }\n' +
+'  }\n' +
+'  gl_FragColor=vec4(color[2],color[1],color[0],1.0);\n' +
+'}';
+
+  function compile(type, src) {
+    var sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.error('Shader error:', gl.getShaderInfoLog(sh)); }
+    return sh;
+  }
+
+  var prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsSrc));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsSrc));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error('Link error:', gl.getProgramInfoLog(prog)); return; }
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,1,-1,-1,1,1,1,-1]), gl.STATIC_DRAW);
+  var aPos = gl.getAttribLocation(prog, 'a_pos');
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  var uRes = gl.getUniformLocation(prog, 'resolution');
+  var uTime = gl.getUniformLocation(prog, 'time');
+
+  function resize() {
+    var w = section ? section.offsetWidth : window.innerWidth;
+    var h = section ? section.offsetHeight : window.innerHeight;
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+  }
+  resize();
+  var ro = new ResizeObserver(resize);
+  ro.observe(section || canvas);
+
+  var start = performance.now();
+  (function render(now) {
+    requestAnimationFrame(render);
+    gl.useProgram(prog);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform1f(uTime, (now - start) * 0.001);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }(performance.now()));
+}());
+</script>
+</body>
+</html>
