@@ -2141,47 +2141,6 @@ input[type="range"]::-moz-range-thumb {
   .lm-grid { grid-template-columns: 1fr; gap: 3rem; }
 }
 
-/* ════════════════════════════════════════════
-   VSL
-════════════════════════════════════════════ */
-#vsl { background: var(--ink); }
-.vsl-inner { max-width: 860px; margin: 0 auto; text-align: center; }
-.vsl-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16/9;
-  background: var(--ink-2);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  overflow: hidden;
-  margin: 0 auto;
-}
-.vsl-placeholder {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 1.5rem;
-}
-.vsl-play-btn {
-  width: 72px; height: 72px;
-  border: 1px solid var(--gold-dim);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem;
-  color: var(--gold);
-  cursor: pointer;
-  transition: background 0.3s ease, border-color 0.3s ease;
-}
-.vsl-play-btn:hover { background: rgba(196,150,58,0.1); border-color: var(--gold); }
-.vsl-label {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  color: var(--chalk-mute);
-  text-transform: uppercase;
-  max-width: 36ch;
-  text-align: center;
-}
 
 /* ════════════════════════════════════════════
    TEXT VISIBILITY — shader section legibility
@@ -2669,24 +2628,6 @@ footer {
   </div>
 </section>
 
-<!-- ════════════════════════════════════════════
-     VSL — VIDEO SALES LETTER
-════════════════════════════════════════════ -->
-<section id="vsl">
-  <div class="wrap">
-    <div class="vsl-inner" data-reveal>
-      <span class="eyebrow eyebrow-gold">Watch This First — 5 Minutes</span>
-      <h2 class="section-headline" style="margin-bottom:2rem;">Before You Apply, Watch This.<br><em>It Will Either Disqualify You or Convince You.</em></h2>
-      <div class="vsl-frame">
-        <div class="vsl-placeholder">
-          <div class="vsl-play-btn" aria-label="Play video">▶</div>
-          <p class="vsl-label">Your VSL video goes here — upload to Vimeo or Wistia and paste the embed code</p>
-        </div>
-      </div>
-      <p class="vsl-note" style="margin-top:2rem;text-align:center;max-width:52ch;margin-left:auto;margin-right:auto;">In this 5-minute video: exactly how the Schatten system works, what the first 30 days look like, and why the founders who get the most out of this engagement come in prepared to be uncomfortable.</p>
-    </div>
-  </div>
-</section>
 
 <!-- ════════════════════════════════════════════
      SOLUTION
