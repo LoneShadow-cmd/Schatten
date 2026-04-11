@@ -2107,6 +2107,116 @@ input[type="range"]::-moz-range-thumb {
 #cta-final p { max-width: 46ch; margin: 0 auto 3.5rem; }
 
 /* ════════════════════════════════════════════
+   TEXT VISIBILITY — shader section legibility
+   Adds subtle dark backdrops behind text that
+   sits on top of shaders/animations. No changes
+   to copy, shaders, or visual design.
+════════════════════════════════════════════ */
+
+/* Shared text-shadow for all headings on shader sections */
+#solution h2, #solution p,
+#offer .offer-head h2, #offer .offer-head p, #offer .offer-head .eyebrow,
+#offer .offer-note, #offer .offer-pricing p,
+#orbital .section-intro h2, #orbital .section-intro p, #orbital .section-intro .eyebrow,
+#process .section-intro h2, #process .section-intro p, #process .section-intro .eyebrow,
+#diagnostic h2, #diagnostic p,
+#cta-final h2, #cta-final p {
+  text-shadow: 0 1px 12px rgba(6,6,6,0.9), 0 0 32px rgba(6,6,6,0.7);
+}
+
+/* Frosted dark panel behind the solution copy block */
+#solution .solution-grid {
+  position: relative;
+}
+#solution .solution-grid > div {
+  background: rgba(6,6,6,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 2px;
+  padding: 2.5rem;
+}
+
+/* Dark panel behind the offer header */
+#offer .offer-head {
+  background: rgba(6,6,6,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 2px;
+  padding: 3rem 4rem;
+}
+
+/* Dark panel behind offer footer pricing block */
+#offer .offer-footer {
+  background: rgba(6,6,6,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 3rem 4rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Dark backdrop behind orbital section intro */
+#orbital .section-intro {
+  background: rgba(6,6,6,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 2px;
+  padding: 2.5rem 3rem;
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Dark backdrop on each phase card in #process */
+#process .phase {
+  background: rgba(6,6,6,0.62);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 2px;
+  margin-bottom: 0.5rem;
+}
+
+/* Dark backdrop behind process section intro */
+#process .section-intro {
+  background: rgba(6,6,6,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 2px;
+  padding: 2.5rem 3rem;
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Dark backdrop on diagnostic header and form */
+#diagnostic .diag-head {
+  background: rgba(6,6,6,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 2px;
+  padding: 2.5rem 3rem;
+}
+#diagnostic .diag-grid {
+  background: rgba(6,6,6,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 2px;
+  padding: 2.5rem;
+}
+
+/* Dark backdrop behind CTA final content */
+#cta-final .wrap > div {
+  background: rgba(6,6,6,0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 2px;
+  padding: 3.5rem 4rem;
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ════════════════════════════════════════════
    FOOTER
 ════════════════════════════════════════════ */
 footer {
