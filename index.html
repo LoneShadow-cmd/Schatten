@@ -16,7 +16,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@300;400&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@300;400&display=swap"></noscript>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
@@ -3308,9 +3309,14 @@ function splitIntoChars(el) {
 
   var preloaderAnimDone = false;
   var katanaFramesDone  = false;
+  var preloaderDismissed = false;
 
   function tryDismiss() {
-    if (preloaderAnimDone && katanaFramesDone) dismissPreloader();
+    if (preloaderDismissed) return;
+    if (preloaderAnimDone && katanaFramesDone) {
+      preloaderDismissed = true;
+      dismissPreloader();
+    }
   }
 
   window.addEventListener('katana-frames-loaded', function() {
@@ -3962,6 +3968,8 @@ document.querySelectorAll('.benefit-card, .svc-card, .result-card').forEach(card
 function initOrbitalTimeline() {
   const stage = document.getElementById('orbital-stage');
   if (!stage) return;
+  if (stage.dataset.initialized) return;
+  stage.dataset.initialized = 'true';
 
   // Schatten service data
   const nodes = [
@@ -4218,7 +4226,7 @@ document.querySelectorAll('.eyebrow').forEach(el => {
 
   var TOTAL_FRAMES      = 363;
   var MOBILE_FRAME_SKIP = 2;
-  var FRAME_CONCURRENCY = 20;
+  var FRAME_CONCURRENCY = 6;
   var LERP_FACTOR       = 0.06;
   var FRAMES_BASE       = 'Prueba%20Con%20Eleven%20Labs/public/frames/';
 
@@ -4436,8 +4444,10 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   ro.observe(section || canvas);
 
   var start = performance.now();
-  (function render(now) {
-    requestAnimationFrame(render);
+  var animatingD = false, rafIdD;
+  function renderD(now) {
+    if (!animatingD) return;
+    rafIdD = requestAnimationFrame(renderD);
     gl.useProgram(prog);
     gl.uniform1f(uTime, (now - start) * 0.001);
     gl.uniform2f(uRes, canvas.width, canvas.height);
@@ -4445,7 +4455,16 @@ document.querySelectorAll('.eyebrow').forEach(el => {
     gl.bindTexture(gl.TEXTURE_2D, noiseTex);
     gl.uniform1i(uCh0, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }(performance.now()));
+  }
+  var obsD = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      if (!animatingD) { animatingD = true; renderD(performance.now()); }
+    } else {
+      animatingD = false;
+      cancelAnimationFrame(rafIdD);
+    }
+  }, { threshold: 0.01 });
+  obsD.observe(section || canvas);
 }());
 
 /* ── Solution shader — WebGL2 Starship/Fallingsky (#solution) ── */
@@ -4524,8 +4543,10 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   ro.observe(section || canvas);
 
   var start = performance.now();
-  (function render(now) {
-    requestAnimationFrame(render);
+  var animatingS = false, rafIdS;
+  function renderS(now) {
+    if (!animatingS) return;
+    rafIdS = requestAnimationFrame(renderS);
     gl.useProgram(prog);
     gl.uniform1f(uTime, (now - start) * 0.001);
     gl.uniform2f(uRes, canvas.width, canvas.height);
@@ -4533,7 +4554,16 @@ document.querySelectorAll('.eyebrow').forEach(el => {
     gl.bindTexture(gl.TEXTURE_2D, noiseTex);
     gl.uniform1i(uCh0, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }(performance.now()));
+  }
+  var obsS = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      if (!animatingS) { animatingS = true; renderS(performance.now()); }
+    } else {
+      animatingS = false;
+      cancelAnimationFrame(rafIdS);
+    }
+  }, { threshold: 0.01 });
+  obsS.observe(section || canvas);
 }());
 
 /* ── UnicornStudio bootstrap (endless + perfectproportions) ── */
@@ -4551,13 +4581,14 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   (document.head || document.body).appendChild(s);
 }());
 
-/* ── Brightness particle animation (brightness.txt) ── */
+/* ── Brightness particle animation (brightness.txt) — lazy-loaded ── */
 (function initBrightnessParticles() {
-  var container = document.getElementById('brightness-container');
-  if (!container) return;
+  var section = document.getElementById('cta-final');
+  if (!section) return;
 
   function runSketch() {
-    if (!window.p5) return;
+    var container = document.getElementById('brightness-container');
+    if (!container || !window.p5) return;
     var sketch = function(p) {
       var particles = [];
       var amount = 2000;
@@ -4619,14 +4650,22 @@ document.querySelectorAll('.eyebrow').forEach(el => {
     new window.p5(sketch);
   }
 
-  if (window.p5) {
-    runSketch();
-  } else {
+  function loadAndRun() {
+    if (window.p5) { runSketch(); return; }
     var s = document.createElement('script');
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js';
     s.onload = runSketch;
     document.head.appendChild(s);
   }
+
+  // Only load p5.js + start sketch when #cta-final enters the viewport
+  var obs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      obs.disconnect();
+      loadAndRun();
+    }
+  }, { threshold: 0.1 });
+  obs.observe(section);
 }());
 
 /* ── Remove UnicornStudio watermark ── */
@@ -4649,12 +4688,10 @@ document.querySelectorAll('.eyebrow').forEach(el => {
     });
   }
 
-  // Run immediately, then every 100ms for 15 seconds to catch late injection
+  // Run once immediately
   clean();
-  var iv = setInterval(clean, 100);
-  setTimeout(function() { clearInterval(iv); }, 15000);
 
-  // MutationObserver: catches elements the moment they're inserted
+  // MutationObserver fires instantly when UnicornStudio injects elements
   var mo = new MutationObserver(clean);
   function observeContainers() {
     document.querySelectorAll('[data-us-project]').forEach(function(c) {
@@ -4662,7 +4699,9 @@ document.querySelectorAll('.eyebrow').forEach(el => {
     });
   }
   observeContainers();
-  // Re-scan once the UnicornStudio script has had time to render
+
+  // Three targeted sweeps to catch delayed injection (no polling loop)
+  setTimeout(function() { clean(); observeContainers(); }, 500);
   setTimeout(function() { clean(); observeContainers(); }, 2000);
   setTimeout(function() { clean(); }, 5000);
 }());
@@ -4743,13 +4782,24 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   ro.observe(section || canvas);
 
   var start = performance.now();
-  (function render(now) {
-    requestAnimationFrame(render);
+  var animatingSv = false, rafIdSv;
+  function renderSv(now) {
+    if (!animatingSv) return;
+    rafIdSv = requestAnimationFrame(renderSv);
     gl.useProgram(prog);
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform1f(uTime, (now - start) * 0.001);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }(performance.now()));
+  }
+  var obsSv = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      if (!animatingSv) { animatingSv = true; renderSv(performance.now()); }
+    } else {
+      animatingSv = false;
+      cancelAnimationFrame(rafIdSv);
+    }
+  }, { threshold: 0.01 });
+  obsSv.observe(section || canvas);
 }());
 
 /* ── Orbital shader — WebGL1 mosaic ring lines (Shaderexplicionblanca) ── */
@@ -4823,13 +4873,24 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   ro.observe(section || canvas);
 
   var start = performance.now();
-  (function render(now) {
-    requestAnimationFrame(render);
+  var animatingO = false, rafIdO;
+  function renderO(now) {
+    if (!animatingO) return;
+    rafIdO = requestAnimationFrame(renderO);
     gl.useProgram(prog);
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform1f(uTime, (now - start) * 0.001);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }(performance.now()));
+  }
+  var obsO = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      if (!animatingO) { animatingO = true; renderO(performance.now()); }
+    } else {
+      animatingO = false;
+      cancelAnimationFrame(rafIdO);
+    }
+  }, { threshold: 0.01 });
+  obsO.observe(section || canvas);
 }());
 </script>
 </body>
