@@ -3174,6 +3174,10 @@ footer {
      FAQ
 ════════════════════════════════════════════ -->
 <section id="faq">
+  <div id="faq-bg" class="us-section-bg">
+    <div data-us-project="whwOGlfJ5Rz2rHaEUgHl"></div>
+    <div class="us-watermark-cover"></div>
+  </div>
   <div class="wrap">
     <div class="section-intro" data-reveal>
       <span class="eyebrow eyebrow-gold">Clarity Before Commitment</span>
@@ -3496,8 +3500,9 @@ function initHeroAnimation() {
 
 /* ── SCROLL ANIMATIONS ─────────────────────── */
 function initScrollAnimations() {
-  // Generic data-reveal elements
+  // Generic data-reveal elements — skip anything that has a dedicated animation below
   gsap.utils.toArray('[data-reveal]').forEach((el, i) => {
+    if (el.matches('.benefit-card, .svc-card, .phase, .pillar, .dist-item, .result-card, .testi-card')) return;
     gsap.from(el, {
       y: 38,
       opacity: 0,
@@ -3537,7 +3542,7 @@ function initScrollAnimations() {
         ease: 'power3.out',
         scrollTrigger: {
           trigger: card,
-          start: 'top 88%',
+          start: 'top 95%',
           once: true,
         },
         delay: (i % 3) * 0.08
@@ -3552,7 +3557,7 @@ function initScrollAnimations() {
       opacity: 0,
       duration: 0.85,
       ease: 'power3.out',
-      scrollTrigger: { trigger: card, start: 'top 87%', once: true },
+      scrollTrigger: { trigger: card, start: 'top 95%', once: true },
       delay: i * 0.1
     });
   });
@@ -3564,7 +3569,7 @@ function initScrollAnimations() {
       opacity: 0,
       duration: 0.7,
       ease: 'power2.out',
-      scrollTrigger: { trigger: p, start: 'top 90%', once: true },
+      scrollTrigger: { trigger: p, start: 'top 95%', once: true },
       delay: i * 0.06
     });
   });
@@ -3576,7 +3581,7 @@ function initScrollAnimations() {
       opacity: 0,
       duration: 0.65,
       ease: 'power2.out',
-      scrollTrigger: { trigger: d, start: 'top 90%', once: true },
+      scrollTrigger: { trigger: d, start: 'top 95%', once: true },
       delay: i * 0.05
     });
   });
@@ -3588,7 +3593,7 @@ function initScrollAnimations() {
       opacity: 0,
       duration: 0.8,
       ease: 'power2.out',
-      scrollTrigger: { trigger: c, start: 'top 88%', once: true },
+      scrollTrigger: { trigger: c, start: 'top 95%', once: true },
       delay: (i % 2) * 0.12
     });
   });
@@ -3600,7 +3605,7 @@ function initScrollAnimations() {
       opacity: 0,
       duration: 0.8,
       ease: 'power2.out',
-      scrollTrigger: { trigger: c, start: 'top 88%', once: true },
+      scrollTrigger: { trigger: c, start: 'top 95%', once: true },
       delay: i * 0.1
     });
   });
