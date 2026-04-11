@@ -2107,6 +2107,83 @@ input[type="range"]::-moz-range-thumb {
 #cta-final p { max-width: 46ch; margin: 0 auto 3.5rem; }
 
 /* ════════════════════════════════════════════
+   LEAD MAGNET
+════════════════════════════════════════════ */
+#lead-magnet { background: var(--ink-1); }
+.lm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+.lm-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0;
+}
+.lm-bullets li {
+  font-size: 0.82rem;
+  color: var(--chalk-sub);
+  padding: 0.65rem 0 0.65rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  line-height: 1.6;
+}
+.lm-bullets li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: 0.75rem;
+}
+.lm-form { display: flex; flex-direction: column; gap: 0; }
+@media (max-width: 860px) {
+  .lm-grid { grid-template-columns: 1fr; gap: 3rem; }
+}
+
+/* ════════════════════════════════════════════
+   VSL
+════════════════════════════════════════════ */
+#vsl { background: var(--ink); }
+.vsl-inner { max-width: 860px; margin: 0 auto; text-align: center; }
+.vsl-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--ink-2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.vsl-placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 1.5rem;
+}
+.vsl-play-btn {
+  width: 72px; height: 72px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  color: var(--gold);
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.vsl-play-btn:hover { background: rgba(196,150,58,0.1); border-color: var(--gold); }
+.vsl-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--chalk-mute);
+  text-transform: uppercase;
+  max-width: 36ch;
+  text-align: center;
+}
+
+/* ════════════════════════════════════════════
    TEXT VISIBILITY — shader section legibility
    Adds subtle dark backdrops behind text that
    sits on top of shaders/animations. No changes
@@ -2479,21 +2556,20 @@ footer {
   <div class="hero-inner">
     <!-- LEFT: Copy -->
     <div class="hero-left">
-      <span class="hero-eyebrow" id="hero-eyebrow">For Founders Generating $500K–$10M Who Are Done Guessing</span>
+      <span class="hero-eyebrow" id="hero-eyebrow">For Founders Generating $500K–$10M Who Are Done Working Harder</span>
 
       <h1 class="hero-hl" id="hero-hl">
-        How to Double Your Revenue<br>Without More Headcount,<br><em>More Ad Spend, or Another Agency.</em>
+        How to Scale Your Business<br>With AI-Automated Growth Systems<br><em>Without Increasing Your Workload or Relying on Chaotic Sales Teams.</em>
       </h1>
 
-      <p class="hero-hook" id="hero-hook">We rebuild the sales funnel, automate the operations, and install an AI layer — so your business grows without you doing everything manually.</p>
+      <p class="hero-hook" id="hero-hook">We embed into your business and install the funnel, automation, and AI infrastructure that makes growth the only logical outcome — without adding headcount, ad spend, or another agency that delivers decks instead of results.</p>
 
-      <p class="hero-body" id="hero-body">We partner with founders who are tired of working hard and still not seeing the numbers move. We go inside your business and rebuild the systems that are quietly costing you money — your funnel, your automations, your AI layer, how you're positioned in the market. When we're done, your business is structured to grow. Not hoping to.</p>
-      <p class="hero-qualifier" id="hero-qualifier">For founders with $500K–$10M in revenue who know their model works — and want to stop leaving money in broken systems.</p>
-      <span class="hero-scarcity" id="hero-scarcity">Selected engagements only &nbsp;·&nbsp; Q2 2026: <span>2 of 6 slots remaining</span></span>
+      <p class="hero-qualifier" id="hero-qualifier">For founders with $500K–$10M in revenue who know their model works — and are done leaving money in broken systems.</p>
+      <span class="hero-scarcity" id="hero-scarcity">Selected partnerships only &nbsp;·&nbsp; Q2 2026: <span>4 new partners per month — spots filling</span></span>
 
       <div class="hero-actions" id="hero-actions">
         <span class="btn-magnetic">
-          <a href="#contact" class="btn btn-primary">Reserve Your Diagnostic Call — Only 2 Spots Left This Quarter</a>
+          <a href="#lead-magnet" class="btn btn-primary">Get Your Free Leaky Funnel Audit — See Exactly What's Costing You</a>
         </span>
         <button class="btn-ghost" onclick="document.querySelector('#problem').scrollIntoView({behavior:'smooth'})">See Exactly What We Build →</button>
       </div>
@@ -2561,6 +2637,74 @@ footer {
           <div class="pillar" data-reveal><span class="pillar-n">06</span><p>You are capable of significantly more. The gap between here and there is not effort. It is architecture.</p></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     LEAD MAGNET — FREE LEAKY FUNNEL AUDIT
+════════════════════════════════════════════ -->
+<section id="lead-magnet">
+  <div class="wrap">
+    <div class="lm-grid" data-reveal>
+      <div class="lm-left">
+        <span class="eyebrow eyebrow-gold">Free — Takes 60 Seconds</span>
+        <h2 class="section-headline">Find Out Exactly How Much Cash<br>Is Leaking From Your Business Right Now.</h2>
+        <p style="margin-top:1.5rem;max-width:46ch;">Most founders are surprised. Enter your details and we'll send you a customised calculation of the exact revenue you're losing to disconnected systems — and the fastest way to close each gap.</p>
+        <ul class="lm-bullets">
+          <li>Pinpoints your highest-leverage revenue leak in under 60 seconds</li>
+          <li>Delivered instantly — no call required</li>
+          <li>Used by 40+ founders to identify $50K–$300K in recoverable revenue</li>
+        </ul>
+      </div>
+      <div class="lm-right">
+        <form class="lm-form" id="lm-form" novalidate>
+          <div class="form-row">
+            <label for="lm-name">Your first name</label>
+            <input type="text" id="lm-name" name="name" placeholder="First name" required>
+          </div>
+          <div class="form-row">
+            <label for="lm-email">Work email</label>
+            <input type="email" id="lm-email" name="email" placeholder="you@company.com" required>
+          </div>
+          <div class="form-row">
+            <label for="lm-revenue">Annual revenue</label>
+            <select id="lm-revenue" name="revenue" required>
+              <option value="" disabled selected>Select a range</option>
+              <option>$500K – $1M</option>
+              <option>$1M – $5M</option>
+              <option>$5M – $10M</option>
+              <option>$10M+</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-submit" id="lm-submit">Send Me My Free Audit →</button>
+          <p class="form-note" style="margin-top:1rem;">No spam. No pitch. Just your audit — sent immediately.</p>
+        </form>
+        <div class="form-success" id="lm-success" style="display:none;">
+          <div class="success-icon"></div>
+          <h3>Your audit is on its way.</h3>
+          <p>Check your inbox — and scroll down to see exactly how we close those gaps.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     VSL — VIDEO SALES LETTER
+════════════════════════════════════════════ -->
+<section id="vsl">
+  <div class="wrap">
+    <div class="vsl-inner" data-reveal>
+      <span class="eyebrow eyebrow-gold">Watch This First — 5 Minutes</span>
+      <h2 class="section-headline" style="margin-bottom:2rem;">Before You Apply, Watch This.<br><em>It Will Either Disqualify You or Convince You.</em></h2>
+      <div class="vsl-frame">
+        <div class="vsl-placeholder">
+          <div class="vsl-play-btn" aria-label="Play video">▶</div>
+          <p class="vsl-label">Your VSL video goes here — upload to Vimeo or Wistia and paste the embed code</p>
+        </div>
+      </div>
+      <p class="vsl-note" style="margin-top:2rem;text-align:center;max-width:52ch;margin-left:auto;margin-right:auto;">In this 5-minute video: exactly how the Schatten system works, what the first 30 days look like, and why the founders who get the most out of this engagement come in prepared to be uncomfortable.</p>
     </div>
   </div>
 </section>
@@ -2689,7 +2833,7 @@ footer {
       <p>We don't quote prices before we understand your business. Investment is based on what you stand to gain — and discussed only after a diagnostic conversation.</p>
       <div class="offer-pricing-cta">
         <span class="btn-magnetic">
-          <a href="#contact" class="btn btn-gold">Apply for a Diagnostic Call — Q2 Has 2 Spots Open</a>
+          <a href="#contact" class="btn btn-gold">Apply for a Schatten Partnership — 4 Spots Per Month</a>
         </span>
       </div>
     </div>
@@ -3195,7 +3339,7 @@ footer {
 
         <div style="text-align:center;">
           <span class="btn-magnetic">
-            <a href="#contact" class="btn btn-primary">Claim Your Free 30-Minute Diagnostic Call — Only 2 Spots Left</a>
+            <a href="#contact" class="btn btn-primary">Apply for Your Schatten Partnership — 4 Spots Per Month</a>
           </span>
           <span class="diag-cta-note">We'll walk through your exact audit results on the call. No pitch. No obligation.</span>
         </div>
@@ -3211,10 +3355,10 @@ footer {
   <div class="wrap">
     <div class="contact-grid">
       <div data-reveal>
-        <span class="eyebrow eyebrow-gold">The Invitation</span>
-        <h2 class="section-headline">Ready to Stop Leaving Money<br><em>in Broken Systems?</em></h2>
-        <p style="margin-top:2rem;">We take six engagements per quarter — maximum. This form is a qualification screen, not a contact form. It exists to protect your time and ours: if we can't genuinely move the needle for your business, we'll tell you directly.</p>
-        <p>If there's a fit, you'll hear from us within 48 hours to schedule a focused 30-minute diagnostic. No pitch decks. No pressure. Just a clear-eyed look at what's costing you money and whether we're the right team to fix it.</p>
+        <span class="eyebrow eyebrow-gold">Apply for a Schatten Partnership</span>
+        <h2 class="section-headline">We Only Onboard 4 New Partners Per Month.<br><em>This Form Decides If You're One of Them.</em></h2>
+        <p style="margin-top:2rem;">This is not a contact form. It is a qualification screen. We review every application personally and only accept partners where we can guarantee a measurable outcome. If you don't qualify, we'll tell you directly — and tell you exactly why.</p>
+        <p>If there's a fit, you'll hear from us within 48 hours to schedule a focused 30-minute diagnostic. No pitch decks. No pressure. Just a precise look at what's costing you money and whether Schatten is the right system to fix it.</p>
         <div class="contact-details">
           <div class="cd-row">
             <span class="cd-label">Response</span>
@@ -3226,7 +3370,7 @@ footer {
           </div>
           <div class="cd-row">
             <span class="cd-label">Availability</span>
-            <span class="cd-val">Q2 2026 · <strong style="color:var(--gold)">2 of 6 slots remaining</strong></span>
+            <span class="cd-val">Q2 2026 · <strong style="color:var(--gold)">4 partners per month — limited</strong></span>
           </div>
           <div class="cd-row">
             <span class="cd-label">Email</span>
@@ -3237,6 +3381,7 @@ footer {
 
       <div data-reveal>
         <form class="contact-form" id="contact-form" novalidate>
+          <!-- BUDGET -->
           <div class="form-row">
             <label for="cf-name">Your name</label>
             <input type="text" id="cf-name" name="name" placeholder="First and last name" required>
@@ -3249,31 +3394,52 @@ footer {
             <label for="cf-revenue">Current annual revenue <span style="color:var(--chalk-mute);font-size:0.75rem;">(minimum $500K to qualify)</span></label>
             <select id="cf-revenue" name="revenue" required>
               <option value="" disabled selected>Select a range</option>
-              <option>Under $500K (not yet a fit — apply when you get there)</option>
+              <option value="disqualify">Under $500K — not yet a fit</option>
               <option>$500K – $1M</option>
               <option>$1M – $5M</option>
               <option>$5M – $10M</option>
               <option>$10M+</option>
             </select>
           </div>
+          <!-- AUTHORITY -->
           <div class="form-row">
-            <label for="cf-friction">Primary friction point</label>
+            <label for="cf-authority">Are you the sole decision-maker for this investment?</label>
+            <select id="cf-authority" name="authority" required>
+              <option value="" disabled selected>Select one</option>
+              <option>Yes — I make this decision alone</option>
+              <option>No — I need to consult a partner or board</option>
+            </select>
+          </div>
+          <!-- NEED -->
+          <div class="form-row">
+            <label for="cf-friction">Where is your biggest system breakdown right now?</label>
             <select id="cf-friction" name="friction" required>
-              <option value="" disabled selected>Where is the system breaking?</option>
+              <option value="" disabled selected>Select the primary bottleneck</option>
               <option>Funnel leaking — leads not converting</option>
               <option>Operations — manual processes, no automation</option>
               <option>Visibility — no real-time decision intelligence</option>
-              <option>Positioning — unclear differentiation</option>
+              <option>Positioning — unclear differentiation in market</option>
               <option>All of the above</option>
             </select>
           </div>
+          <!-- TIMING -->
+          <div class="form-row">
+            <label for="cf-timing">How soon are you ready to start?</label>
+            <select id="cf-timing" name="timing" required>
+              <option value="" disabled selected>Select one</option>
+              <option>Immediately — I'm ready to move</option>
+              <option>Within 30 days</option>
+              <option>1–3 months from now</option>
+              <option>Just researching for now</option>
+            </select>
+          </div>
           <div class="form-row" style="border-bottom:1px solid var(--border);">
-            <label for="cf-goal">What does success look like in 90 days — and are you the sole decision-maker for this investment?</label>
-            <textarea id="cf-goal" name="goal" placeholder="Be specific: what numbers move, what stops breaking, what does your week look like? Also note: if others need to approve this investment, tell us who and how that process works." required></textarea>
+            <label for="cf-goal">What does success look like in 90 days?</label>
+            <textarea id="cf-goal" name="goal" placeholder="Be specific: what numbers move, what stops breaking, what does your week look like?" required></textarea>
           </div>
           <div class="form-actions">
             <p class="form-note">Every application is reviewed personally. If you qualify, you'll hear back within 48 hours — not a newsletter, not a sequence. A direct response.</p>
-            <button type="submit" class="btn-submit">Send My Application — Claim One of 2 Remaining Spots</button>
+            <button type="submit" class="btn-submit">Apply for Your Schatten Partnership — 4 Spots Per Month</button>
           </div>
         </form>
         <div class="form-success" id="form-success">
@@ -3344,10 +3510,10 @@ footer {
       <div class="orn-line" style="justify-content:center;margin-bottom:2.5rem;">
         <div class="orn-diamond"></div>
       </div>
-      <h2>Two Spots Left This Quarter.<br>One Conversation to See If There's a Fit.</h2>
-      <p>One 30-minute call. No pitch decks. No pressure. We look at your architecture, you look at our process, and we decide together. If there's no fit, we'll tell you directly. If there is — we start immediately.</p>
+      <h2>Apply for Your Schatten Partnership Now.<br><em>We Only Onboard 4 New Partners Per Month.</em></h2>
+      <p>One 30-minute call. We look at your exact architecture, identify the gaps, and tell you what it would take to close them. No decks. No pressure. If we're not the right fit, you'll know in the first five minutes. If we are — we start immediately.</p>
       <span class="btn-magnetic" style="display:inline-block;">
-        <a href="#contact" class="btn btn-outline">Apply for Your Diagnostic Call — 2 Spots Left This Quarter</a>
+        <a href="#contact" class="btn btn-outline">Book Your Discovery Call — Limited to 4 Partners Per Month</a>
       </span>
     </div>
   </div>
@@ -3892,6 +4058,46 @@ contactForm.addEventListener('submit', e => {
     });
   }, 1200);
 });
+
+/* ── LEAD MAGNET FORM ──────────────────────── */
+const lmForm = document.getElementById('lm-form');
+const lmSuccess = document.getElementById('lm-success');
+if (lmForm) {
+  lmForm.addEventListener('submit', e => {
+    e.preventDefault();
+    let valid = true;
+    lmForm.querySelectorAll('[required]').forEach(f => {
+      if (!f.value.trim()) { valid = false; }
+    });
+    if (!valid) return;
+    const btn = lmForm.querySelector('#lm-submit');
+    btn.textContent = 'Sending…';
+    setTimeout(() => {
+      lmForm.style.display = 'none';
+      lmSuccess.style.display = 'block';
+      gsap.from(lmSuccess, { opacity: 0, y: 16, duration: 0.5, ease: 'power2.out' });
+    }, 900);
+  });
+}
+
+/* ── BANT AUTO-DISQUALIFICATION ─────────────── */
+const revenueSelect = document.getElementById('cf-revenue');
+if (revenueSelect) {
+  revenueSelect.addEventListener('change', function() {
+    const submitBtn = contactForm.querySelector('.btn-submit');
+    if (this.value === 'disqualify') {
+      submitBtn.textContent = 'Not Yet Eligible — Come Back at $500K+';
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.4';
+      submitBtn.style.cursor = 'not-allowed';
+    } else {
+      submitBtn.textContent = 'Apply for Your Schatten Partnership — 4 Spots Per Month';
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '';
+      submitBtn.style.cursor = '';
+    }
+  });
+}
 
 /* ── DIAGNOSTIC TOOL ───────────────────────── */
 (function initDiagnostic() {
