@@ -2276,7 +2276,7 @@ footer {
 #differentiation-bg { opacity: 0.20; }
 #orbital-bg         { opacity: 0.45; mix-blend-mode: normal; z-index: 1; }
 #orbital-bg + canvas { z-index: 2; }
-#orbital .wrap, #process .wrap { position: relative; z-index: 3; }
+#orbital .wrap, #process .wrap, #offer .offer-head, #offer .offer-scroll-viewport, #offer .offer-foot { position: relative; z-index: 3; }
 #diagnostic-shader  { opacity: 0.30; }
 #solution-shader    { opacity: 0.25; }
 #brightness-container {
@@ -2487,6 +2487,9 @@ footer {
      OFFER — HORIZONTAL SCROLL
 ════════════════════════════════════════════ -->
 <section id="offer">
+  <div style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:1;">
+    <div data-us-project="OMzqyUv6M3kSnv0JeAtC" style="width:100%;height:100%;min-height:100vh;"></div>
+  </div>
   <div class="offer-head" data-reveal>
     <span class="eyebrow eyebrow-gold">The System</span>
     <h2 class="section-headline">Eight Systems. Installed Inside Your Business.<br>Each One Pays for Itself.</h2>
