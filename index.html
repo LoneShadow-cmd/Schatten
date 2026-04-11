@@ -2272,8 +2272,10 @@ footer {
 }
 #problem-bg         { opacity: 0.25; }
 #differentiation-bg { opacity: 0.20; }
-#orbital-bg         { opacity: 0.30; mix-blend-mode: normal; }
-#process-bg         { opacity: 0.35; mix-blend-mode: normal; }
+#orbital-bg         { opacity: 0.45; mix-blend-mode: normal; z-index: 1; }
+#process-bg         { opacity: 0.55; mix-blend-mode: normal; z-index: 1; }
+#orbital-bg + canvas { z-index: 2; }
+#orbital .wrap, #process .wrap { position: relative; z-index: 3; }
 #diagnostic-shader  { opacity: 0.30; }
 #solution-shader    { opacity: 0.25; }
 #brightness-container {
@@ -4569,38 +4571,19 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   obsS.observe(section || canvas);
 }());
 
-/* ── UnicornStudio bootstrap — lazy, loads only when #orbital or #process enters viewport ── */
+/* ── UnicornStudio bootstrap ── */
 (function loadUnicornStudio() {
-  function boot() {
-    if (window.UnicornStudio && window.UnicornStudio.isInitialized) return;
-    if (!window.UnicornStudio) window.UnicornStudio = { isInitialized: false };
-    var s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.33/dist/unicornStudio.umd.js';
-    s.onload = function() {
-      if (!window.UnicornStudio.isInitialized) {
-        UnicornStudio.init();
-        window.UnicornStudio.isInitialized = true;
-      }
-    };
-    (document.head || document.body).appendChild(s);
-  }
-
-  var targets = ['orbital', 'process'].map(function(id) {
-    return document.getElementById(id);
-  }).filter(Boolean);
-
-  if (!targets.length) { boot(); return; }
-
-  var usObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        usObs.disconnect();
-        boot();
-      }
-    });
-  }, { rootMargin: '600px' });
-
-  targets.forEach(function(t) { usObs.observe(t); });
+  if (window.UnicornStudio) return;
+  window.UnicornStudio = { isInitialized: false };
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.33/dist/unicornStudio.umd.js';
+  s.onload = function() {
+    if (!window.UnicornStudio.isInitialized) {
+      UnicornStudio.init();
+      window.UnicornStudio.isInitialized = true;
+    }
+  };
+  (document.head || document.body).appendChild(s);
 }());
 
 /* ── Brightness particle animation (brightness.txt) — lazy-loaded ── */
