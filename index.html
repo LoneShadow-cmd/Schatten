@@ -2272,6 +2272,8 @@ footer {
 }
 #problem-bg         { opacity: 0.25; }
 #differentiation-bg { opacity: 0.20; }
+#orbital-bg         { opacity: 0.30; mix-blend-mode: normal; }
+#process-bg         { opacity: 0.35; mix-blend-mode: normal; }
 #diagnostic-shader  { opacity: 0.30; }
 #solution-shader    { opacity: 0.25; }
 #brightness-container {
@@ -4596,7 +4598,7 @@ document.querySelectorAll('.eyebrow').forEach(el => {
         boot();
       }
     });
-  }, { rootMargin: '200px' });
+  }, { rootMargin: '600px' });
 
   targets.forEach(function(t) { usObs.observe(t); });
 }());
