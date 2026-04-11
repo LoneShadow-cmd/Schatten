@@ -2422,10 +2422,6 @@ footer {
      PROBLEM
 ════════════════════════════════════════════ -->
 <section id="problem">
-  <div id="problem-bg" class="us-section-bg">
-    <div data-us-project="OMzqyUv6M3kSnv0JeAtC"></div>
-    <div class="us-watermark-cover" aria-hidden="true"></div>
-  </div>
   <div class="wrap">
     <div class="problem-layout">
       <div class="problem-left">
@@ -2631,6 +2627,10 @@ footer {
      ORBITAL TIMELINE
 ════════════════════════════════════════════ -->
 <section id="orbital">
+  <div id="orbital-bg" class="us-section-bg">
+    <div data-us-project="OMzqyUv6M3kSnv0JeAtC"></div>
+    <div class="us-watermark-cover" aria-hidden="true"></div>
+  </div>
   <canvas id="orbital-shader" class="section-shader" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="section-intro" data-reveal>
@@ -2672,6 +2672,10 @@ footer {
      PROCESS
 ════════════════════════════════════════════ -->
 <section id="process">
+  <div id="process-bg" class="us-section-bg">
+    <div data-us-project="whwOGlfJ5Rz2rHaEUgHl"></div>
+    <div class="us-watermark-cover" aria-hidden="true"></div>
+  </div>
   <div class="wrap">
     <div class="section-intro" data-reveal>
       <span class="eyebrow eyebrow-gold">The Engagement Architecture</span>
@@ -2812,10 +2816,6 @@ footer {
      DIFFERENTIATION
 ════════════════════════════════════════════ -->
 <section id="differentiation">
-  <div id="differentiation-bg" class="us-section-bg">
-    <div data-us-project="whwOGlfJ5Rz2rHaEUgHl"></div>
-    <div class="us-watermark-cover" aria-hidden="true"></div>
-  </div>
   <div class="wrap">
     <div class="diff-grid">
       <div data-reveal>
@@ -3174,10 +3174,6 @@ footer {
      FAQ
 ════════════════════════════════════════════ -->
 <section id="faq">
-  <div id="faq-bg" class="us-section-bg">
-    <div data-us-project="whwOGlfJ5Rz2rHaEUgHl"></div>
-    <div class="us-watermark-cover"></div>
-  </div>
   <div class="wrap">
     <div class="section-intro" data-reveal>
       <span class="eyebrow eyebrow-gold">Clarity Before Commitment</span>
@@ -4571,19 +4567,38 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   obsS.observe(section || canvas);
 }());
 
-/* ── UnicornStudio bootstrap (endless + perfectproportions) ── */
+/* ── UnicornStudio bootstrap — lazy, loads only when #orbital or #process enters viewport ── */
 (function loadUnicornStudio() {
-  if (window.UnicornStudio) return;
-  window.UnicornStudio = { isInitialized: false };
-  var s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.33/dist/unicornStudio.umd.js';
-  s.onload = function() {
-    if (!window.UnicornStudio.isInitialized) {
-      UnicornStudio.init();
-      window.UnicornStudio.isInitialized = true;
-    }
-  };
-  (document.head || document.body).appendChild(s);
+  function boot() {
+    if (window.UnicornStudio && window.UnicornStudio.isInitialized) return;
+    if (!window.UnicornStudio) window.UnicornStudio = { isInitialized: false };
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.33/dist/unicornStudio.umd.js';
+    s.onload = function() {
+      if (!window.UnicornStudio.isInitialized) {
+        UnicornStudio.init();
+        window.UnicornStudio.isInitialized = true;
+      }
+    };
+    (document.head || document.body).appendChild(s);
+  }
+
+  var targets = ['orbital', 'process'].map(function(id) {
+    return document.getElementById(id);
+  }).filter(Boolean);
+
+  if (!targets.length) { boot(); return; }
+
+  var usObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        usObs.disconnect();
+        boot();
+      }
+    });
+  }, { rootMargin: '200px' });
+
+  targets.forEach(function(t) { usObs.observe(t); });
 }());
 
 /* ── Brightness particle animation (brightness.txt) — lazy-loaded ── */
