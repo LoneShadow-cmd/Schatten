@@ -2171,7 +2171,7 @@ input[type="range"]::-moz-range-thumb {
   z-index: 3;
 }
 
-/* Strong layered text-shadow — creates contrast without any box */
+/* Force pure white text on all shader sections */
 #offer .offer-head h2,
 #offer .offer-head p,
 #offer .offer-head .eyebrow,
@@ -2179,6 +2179,7 @@ input[type="range"]::-moz-range-thumb {
 #offer .offer-pricing p,
 #offer .offer-card h4,
 #offer .offer-card p,
+#offer .offer-card-tag,
 #process .section-headline,
 #process .section-intro p,
 #process .section-intro .eyebrow,
@@ -2186,13 +2187,11 @@ input[type="range"]::-moz-range-thumb {
 #process .phase-sub,
 #process .phase p,
 #process .phase-label,
-#solution h2, #solution p,
+#solution h2, #solution p, #solution li, #solution .solution-closer,
 #diagnostic h2, #diagnostic p,
 #cta-final h2, #cta-final p {
-  text-shadow:
-    0 0 8px rgba(6,6,6,1),
-    0 0 20px rgba(6,6,6,0.95),
-    0 2px 4px rgba(6,6,6,1);
+  color: #ffffff !important;
+  text-shadow: none;
 }
 
 
