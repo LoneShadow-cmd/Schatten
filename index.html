@@ -809,9 +809,12 @@ section { padding: 10rem 0; position: relative; }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background: rgba(6,6,6,0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .offer-card:last-child { border-right: none; }
-.offer-card:hover { background: rgba(196,150,58,0.025); }
+.offer-card:hover { background: rgba(20,16,6,0.82); }
 .offer-card-n {
   font-family: var(--mono);
   font-size: 0.6rem;
@@ -2231,6 +2234,22 @@ input[type="range"]::-moz-range-thumb {
   box-sizing: border-box;
 }
 
+/* Engagement Architecture — phase cards and intro get backdrop over shader */
+#process .section-intro,
+#process .phase {
+  background: rgba(6,6,6,0.70);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 2px;
+}
+#process .section-intro {
+  padding: 2.5rem 3rem;
+  margin-bottom: 3rem;
+}
+#process .phase {
+  margin-bottom: 2px;
+}
+
 /* ════════════════════════════════════════════
    FOOTER
 ════════════════════════════════════════════ */
@@ -3086,44 +3105,44 @@ footer {
     </div>
     <div class="results-grid">
       <div class="result-card" data-reveal>
-        <span class="result-stat-num">−38%</span>
-        <p>A B2B professional services firm reduced their average sales cycle by <mark>38%</mark> within 90 days of funnel restructuring — without increasing their marketing budget.</p>
-        <span class="result-src">B2B Professional Services · Funnel Restructuring</span>
+        <span class="result-stat-num">90 days</span>
+        <p>Every core system — funnel, automation, dashboard, AI layer — is installed and operational within the first <mark>90-day engagement</mark>. No multi-year retainers. No endless roadmaps.</p>
+        <span class="result-src">Standard Engagement Timeline</span>
       </div>
       <div class="result-card" data-reveal>
-        <span class="result-stat-num">22 hrs</span>
-        <p>A founder-led consultancy launched a custom AI operational layer that eliminated <mark>22 hours</mark> of weekly cognitive overhead — freeing the principal to operate as a strategist.</p>
-        <span class="result-src">Founder-Led Consultancy · AI Operational Layer</span>
+        <span class="result-stat-num">4 partners</span>
+        <p>Schatten accepts a maximum of <mark>4 new partners per month</mark>. Every engagement receives direct access to the principal architect — no account managers, no junior teams.</p>
+        <span class="result-src">Engagement Model · Limited Access</span>
       </div>
       <div class="result-card" data-reveal>
-        <span class="result-stat-num">+61%</span>
-        <p>An e-commerce brand repositioned their core offer and increased average order value by <mark>61%</mark> while reducing customer acquisition cost by <mark>29%</mark>.</p>
-        <span class="result-src">E-Commerce · Market Repositioning</span>
+        <span class="result-stat-num">ROI first</span>
+        <p>Before any expansion phase begins, we establish a measurable ROI baseline. If your investment isn't demonstrably recovered, <mark>we keep building until it is</mark>.</p>
+        <span class="result-src">ROI-First Mandate · All Engagements</span>
       </div>
       <div class="result-card" data-reveal>
-        <span class="result-stat-num">$400K</span>
-        <p>A growth-stage agency installed Schatten's dashboard architecture and, for the first time, made a <mark>$400K strategic decision</mark> with full confidence in under two hours.</p>
-        <span class="result-src">Growth-Stage Agency · Dashboard Architecture</span>
+        <span class="result-stat-num">6 systems</span>
+        <p>Every engagement deploys across <mark>6 core disciplines</mark> — funnel, automation, intelligence, AI operations, positioning, and sales — working as one compounding architecture.</p>
+        <span class="result-src">Integrated Architecture · Full Deployment</span>
       </div>
     </div>
     <div class="case-strip" data-reveal>
       <div class="cs-card">
         <span class="cs-tag">B2B Professional Services · Funnel Restructuring</span>
         <h4>The leaking funnel costing more than it converted</h4>
-        <p class="cs-challenge">Three stages were creating friction — misaligned messaging, a weak proposal process, and no intelligent follow-up. The team was manually chasing deals that should have closed themselves.</p>
-        <div class="cs-result"><span class="cs-result-n">−38%</span><span class="cs-result-l">sales cycle<br>in 90 days</span></div>
+        <p class="cs-challenge">Three stages were creating friction — misaligned messaging, a weak proposal process, and no intelligent follow-up. The team was manually chasing deals that should have closed themselves. Within 90 days, the funnel operated at a level they thought required triple the headcount.</p>
+        <div class="cs-result"><span class="cs-result-n">Closed</span><span class="cs-result-l">structural leaks<br>without new spend</span></div>
       </div>
       <div class="cs-card">
         <span class="cs-tag">Founder-Led Consultancy · AI Layer</span>
         <h4>The founder trapped inside their own business</h4>
-        <p class="cs-challenge">22+ hours per week on tasks with no strategic value — drafting, responding, reporting. Every hour on operations was an hour not spent on vision and the decisions that move the business.</p>
-        <div class="cs-result"><span class="cs-result-n">22h</span><span class="cs-result-l">overhead eliminated<br>per week</span></div>
+        <p class="cs-challenge">The principal was spending the majority of each week on tasks with no strategic value — drafting, responding, reporting. Installing a custom AI operational layer moved the founder entirely out of execution and into the decisions that actually grow the business.</p>
+        <div class="cs-result"><span class="cs-result-n">Freed</span><span class="cs-result-l">to operate at<br>principal level</span></div>
       </div>
       <div class="cs-card">
         <span class="cs-tag">Growth-Stage Agency · Dashboard Architecture</span>
-        <h4>The $400K decision they couldn't make without a clear view</h4>
-        <p class="cs-challenge">Fragmented data across five tools. No single view of pipeline health. A major strategic opportunity arose — and without the infrastructure to evaluate it, the decision took weeks and lacked confidence.</p>
-        <div class="cs-result"><span class="cs-result-n">$400K</span><span class="cs-result-l">decision made<br>with confidence</span></div>
+        <h4>The decision they couldn't make without a clear view</h4>
+        <p class="cs-challenge">Data fragmented across five platforms. No unified pipeline view. A major strategic opportunity arose and the team had no infrastructure to evaluate it with confidence. After installing the War Room dashboard, strategic decisions that once took weeks began happening in hours.</p>
+        <div class="cs-result"><span class="cs-result-n">Built</span><span class="cs-result-l">command-level<br>decision clarity</span></div>
       </div>
     </div>
     <div class="authority-pillars" data-reveal>
