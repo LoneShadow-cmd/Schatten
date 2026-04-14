@@ -3518,6 +3518,18 @@ function splitIntoChars(el) {
 
   // Drive bar proportionally across the 5-second minimum
   var barProxy = { p: 0 };
+  var vidReady = false;
+  var vidEl    = document.getElementById('preloader-video');
+
+  if (vidEl) {
+    // When video becomes seekable, sync it to wherever the bar is
+    vidEl.addEventListener('canplay', function onCanPlay() {
+      vidEl.removeEventListener('canplay', onCanPlay);
+      vidReady = true;
+      if (vidEl.duration) vidEl.currentTime = barProxy.p * vidEl.duration;
+    });
+  }
+
   gsap.to(barProxy, {
     p: 1,
     duration: 5,
@@ -3525,9 +3537,8 @@ function splitIntoChars(el) {
     onUpdate: function() {
       var bar = document.getElementById('preloader-bar');
       if (bar) bar.style.width = Math.round(barProxy.p * 100) + '%';
-      var vid = document.getElementById('preloader-video');
-      if (vid && vid.readyState >= 2 && vid.duration) {
-        vid.currentTime = barProxy.p * vid.duration;
+      if (vidReady && vidEl && vidEl.duration) {
+        vidEl.currentTime = barProxy.p * vidEl.duration;
       }
     }
   });
@@ -5123,8 +5134,9 @@ document.querySelectorAll('.eyebrow').forEach(el => {
 
   var TOTAL       = 240;
   var CONCURRENCY = 6;
-  var BASE        = 'nav-logo-frames/';
+  var BASE        = './nav-logo-frames/';
   var LERP        = 0.08;
+  var REST_FRAME  = 119; // middle frame — logo fully visible at rest
 
   var dpr = window.devicePixelRatio || 1;
   canvas.width  = Math.round(195 * dpr * (16/9));
@@ -5145,6 +5157,8 @@ document.querySelectorAll('.eyebrow').forEach(el => {
         frameCache.set(i, img);
         loadedCount++;
         if (loadedCount === TOTAL) { isLoaded = true; }
+        // Draw the rest frame as soon as it arrives so logo is never blank
+        if (i === REST_FRAME) drawFrame(img);
         worker();
       };
       img.onerror = function() { loadedCount++; worker(); };
@@ -5183,7 +5197,10 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   (function render() {
     requestAnimationFrame(render);
     smoothP += (rawP - smoothP) * LERP;
-    var idx   = Math.min(Math.round(smoothP * (TOTAL - 1)), TOTAL - 1);
+    // When at top of page use REST_FRAME so logo is always visible
+    var idx   = rawP < 0.001
+      ? REST_FRAME
+      : Math.min(Math.round(smoothP * (TOTAL - 1)), TOTAL - 1);
     var frame = frameCache.get(idx);
     if (frame) drawFrame(frame);
   })();
