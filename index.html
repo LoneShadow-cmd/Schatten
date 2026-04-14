@@ -2403,7 +2403,8 @@ footer {
 ════════════════════════════════════════════ -->
 <div id="preloader" aria-hidden="true">
   <div id="preloader-inner">
-    <canvas id="preloader-canvas" class="preloader-mark" style="display:block;"></canvas>
+    <video class="preloader-mark" autoplay muted playsinline disablepictureinpicture
+      style="display:block;object-fit:contain;" src="Videologoschatten.mp4"></video>
     <div class="preloader-bar-wrap">
       <div class="preloader-bar" id="preloader-bar"></div>
     </div>
@@ -2439,7 +2440,9 @@ footer {
 <nav id="nav">
   <a href="#hero" class="nav-logo">
     <span style="position:relative;display:inline-block;line-height:0;">
-      <canvas id="nav-logo-canvas" style="height:110px;width:auto;display:block;pointer-events:none;background:#000000;"></canvas>
+      <video id="nav-logo-video" autoplay muted playsinline loop disablepictureinpicture
+        style="height:110px;width:auto;display:block;object-fit:contain;pointer-events:none;"
+        src="Videologoschatten.mp4"></video>
     </span>
     <span style="margin-left:-7rem;position:relative;z-index:2;">Schatten</span>
   </a>
@@ -3513,69 +3516,20 @@ function splitIntoChars(el) {
     }
   });
 
-  // ── Preloader frame sequence ──────────────────────────────────────────────
-  var PL_TOTAL = 90;   // only load frames 0-89 (logo reveal zone, peak at ~75)
-  var PL_BASE  = 'nav-logo-frames/';
-  var plCache  = new Map();
-  var plCanvas = document.getElementById('preloader-canvas');
+  // ── Preloader progress bar — driven by simple timer ──────────────────────
+  var plStart    = performance.now();
+  var PL_DURATION = 5000;
+  var plActive   = true;
 
-  if (plCanvas) {
-    plCanvas.width  = 600;
-    plCanvas.height = 600;
+  (function plLoop() {
+    if (!plActive) return;
+    requestAnimationFrame(plLoop);
+    var p   = Math.min((performance.now() - plStart) / PL_DURATION, 1);
+    var bar = document.getElementById('preloader-bar');
+    if (bar) bar.style.width = Math.round(p * 100) + '%';
+  })();
 
-    function plDraw(img) {
-      var ctx = plCanvas.getContext('2d');
-      ctx.fillStyle = '#060606';
-      ctx.fillRect(0, 0, 600, 600);
-      if (!img) return;
-      var sw = img.naturalWidth, sh = img.naturalHeight;
-      if (!sw || !sh) return;
-      var scale = Math.min(600 / sw, 600 / sh);
-      var dw = sw * scale, dh = sh * scale;
-      ctx.drawImage(img, (600 - dw) / 2, (600 - dh) / 2, dw, dh);
-    }
-
-    // Load frames 0-89 with high concurrency
-    (function() {
-      var idx = 0;
-      function worker() {
-        if (idx >= PL_TOTAL) return;
-        var i = idx++, num = String(i).padStart(4, '0');
-        var img = new Image();
-        img.onload = function() { plCache.set(i, img); worker(); };
-        img.onerror = function() { worker(); };
-        img.src = PL_BASE + num + '.webp';
-      }
-      for (var w = 0; w < 10; w++) worker();
-    })();
-
-    // RAF loop — runs every frame, independent of GSAP and network timing
-    var plStart = performance.now();
-    var PL_DURATION = 5000;
-    var plActive = true;
-
-    (function plLoop() {
-      if (!plActive) return;
-      requestAnimationFrame(plLoop);
-
-      var p   = Math.min((performance.now() - plStart) / PL_DURATION, 1);
-      var bar = document.getElementById('preloader-bar');
-      if (bar) bar.style.width = Math.round(p * 100) + '%';
-
-      var targetIdx = Math.round(p * (PL_TOTAL - 1));
-      var frame = plCache.get(targetIdx);
-      // Walk backwards to find nearest loaded frame
-      if (!frame) {
-        for (var d = 1; d <= targetIdx && !frame; d++) {
-          frame = plCache.get(targetIdx - d);
-        }
-      }
-      if (frame) plDraw(frame);
-    })();
-
-    // Expose stop function so dismissPreloader can halt the RAF
-    window._stopPlLoop = function() { plActive = false; };
-  }
+  window._stopPlLoop = function() { plActive = false; };
 
   tl.to({}, { duration: 0.01, onComplete: function() {} }); // keep timeline alive for onComplete
 })();
@@ -4225,12 +4179,20 @@ document.querySelectorAll('.benefit-card, .svc-card, .result-card').forEach(card
   resize();
   window.addEventListener('resize', resize);
 
-  (function loop() {
+  var heroAnimating = false;
+  function loop() {
+    if (!heroAnimating) return;
     requestAnimationFrame(loop);
     time += 0.05;
     gl.uniform1f(uTime, time);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  })();
+  }
+  new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { if (!heroAnimating) { heroAnimating = true; loop(); } }
+      else { heroAnimating = false; }
+    });
+  }, { threshold: 0.01 }).observe(hero);
 })();
 
 /* ── RADIAL ORBITAL TIMELINE ────────────────── */
@@ -5160,91 +5122,5 @@ document.querySelectorAll('.eyebrow').forEach(el => {
 }());
 </script>
 
-<script>
-/* ── Nav logo — frame sequence scroll scrub (same pattern as katana) ── */
-(function() {
-  var canvas = document.getElementById('nav-logo-canvas');
-  if (!canvas) return;
-
-  var TOTAL       = 240;
-  var CONCURRENCY = 6;
-  var BASE        = './nav-logo-frames/';
-  var LERP        = 0.08;
-  var REST_FRAME  = 75; // peak brightness frame — logo fully visible
-
-  var dpr = window.devicePixelRatio || 1;
-  canvas.width  = Math.round(195 * dpr * (16/9));
-  canvas.height = Math.round(110 * dpr);
-
-  var frameCache  = new Map();
-  var loadedCount = 0;
-  var isLoaded    = false;
-
-  function loadFrames() {
-    var index = 0;
-    function worker() {
-      if (index >= TOTAL) return;
-      var i   = index++;
-      var num = String(i).padStart(4, '0');
-      var img = new Image();
-      img.onload = function() {
-        frameCache.set(i, img);
-        loadedCount++;
-        if (loadedCount === TOTAL) { isLoaded = true; }
-        // Draw the rest frame as soon as it arrives so logo is never blank
-        if (i === REST_FRAME) drawFrame(img);
-        worker();
-      };
-      img.onerror = function() { loadedCount++; worker(); };
-      img.src = BASE + num + '.webp';
-    }
-    for (var w = 0; w < CONCURRENCY; w++) worker();
-  }
-  loadFrames();
-
-  function drawFrame(img) {
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    if (!img) return;
-    var sw = img.naturalWidth, sh = img.naturalHeight;
-    if (!sw || !sh) return;
-    var scale = Math.max(canvas.width / sw, canvas.height / sh);
-    var dw = sw * scale, dh = sh * scale;
-    var dx = (canvas.width  - dw) / 2;
-    var dy = (canvas.height - dh) / 2;
-    ctx.drawImage(img, dx, dy, dw, dh);
-  }
-
-  var rawP    = 0;
-  var smoothP = 0;
-
-  function attachLenis() {
-    if (typeof lenis !== 'undefined' && lenis) {
-      lenis.on('scroll', function(e) { rawP = e.progress; });
-    } else {
-      setTimeout(attachLenis, 100);
-    }
-  }
-  attachLenis();
-
-  (function render() {
-    requestAnimationFrame(render);
-    smoothP += (rawP - smoothP) * LERP;
-    // When at top of page use REST_FRAME so logo is always visible
-    var idx   = rawP < 0.001
-      ? REST_FRAME
-      : Math.min(Math.round(smoothP * (TOTAL - 1)), TOTAL - 1);
-    var frame = frameCache.get(idx);
-    // Fallback: find nearest loaded frame if exact one isn't cached yet
-    if (!frame) {
-      for (var d = 1; d < 30 && !frame; d++) {
-        frame = frameCache.get(Math.max(0, idx - d)) || frameCache.get(Math.min(TOTAL - 1, idx + d));
-      }
-    }
-    if (frame) drawFrame(frame);
-  })();
-}());
-</script>
 </body>
 </html>
