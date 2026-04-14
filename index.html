@@ -107,39 +107,40 @@ input, select, textarea { font-family: inherit; }
   background: var(--ink);
   z-index: 99999;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2.5rem;
 }
-.preloader-mark {
-  width: 64px;
-  height: 64px;
-}
-.preloader-path {
-  stroke-dasharray: 220;
-  stroke-dashoffset: 220;
-}
-.preloader-wordmark {
-  display: flex;
-  gap: 0.04em;
+#preloader-inner {
+  position: relative;
+  display: inline-flex;
   overflow: hidden;
 }
-.preloader-char {
-  font-family: var(--serif);
-  font-size: 0.72rem;
-  font-weight: 400;
-  letter-spacing: 0.48em;
-  text-transform: uppercase;
-  color: var(--chalk-mute);
-  transform: translateY(20px);
-  opacity: 0;
+#preloader-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 30%;
+  background: #060606;
+  z-index: 10;
+  pointer-events: none;
+}
+.preloader-mark {
+  width: min(95vw, 95vh);
+  height: min(95vw, 95vh);
+  border: none;
+  outline: none;
+  box-shadow: none;
+  clip-path: inset(3% 0 0 0);
 }
 .preloader-bar-wrap {
-  width: 160px;
+  position: absolute;
+  bottom: auto;
+  top: 72%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
   height: 1px;
-  background: var(--border);
-  position: relative;
+  background: rgba(255,255,255,0.15);
   overflow: hidden;
 }
 .preloader-bar {
@@ -369,16 +370,13 @@ section { padding: 10rem 0; position: relative; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(6,6,6,0.5);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
-  border-bottom: 1px solid var(--border);
-  transition: padding .4s var(--ease-out), background .4s ease;
+  background: #000000 !important;
+  border-bottom: 1px solid #000000;
+  transition: padding .4s var(--ease-out);
 }
 #nav.compact {
   padding-top: 1.1rem;
   padding-bottom: 1.1rem;
-  background: rgba(6,6,6,0.92);
 }
 .nav-logo {
   font-family: var(--serif);
@@ -387,6 +385,9 @@ section { padding: 10rem 0; position: relative; }
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--chalk);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 .nav-links {
   display: flex;
@@ -502,7 +503,7 @@ section { padding: 10rem 0; position: relative; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0;
+  padding-top: 130px;
   position: relative;
   overflow: hidden;
 }
@@ -2098,7 +2099,16 @@ input[type="range"]::-moz-range-thumb {
   pointer-events: none;
   line-height: 1;
 }
+#cta-final::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(6,6,6,0.82) 0%, rgba(6,6,6,0.5) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
 #cta-final .wrap { position: relative; z-index: 1; }
+#cta-final h2, #cta-final p { color: #ffffff !important; text-shadow: 0 2px 24px rgba(0,0,0,0.9), 0 1px 6px rgba(0,0,0,0.95); }
 #cta-final h2 {
   font-size: clamp(2.2rem, 4.5vw, 3.75rem);
   max-width: 18ch;
@@ -2188,8 +2198,7 @@ input[type="range"]::-moz-range-thumb {
 #process .phase p,
 #process .phase-label,
 #solution h2, #solution p, #solution li, #solution .solution-closer,
-#diagnostic h2, #diagnostic p,
-#cta-final h2, #cta-final p {
+#diagnostic h2, #diagnostic p {
   color: #ffffff !important;
   text-shadow: none;
 }
@@ -2393,13 +2402,15 @@ footer {
      PRELOADER
 ════════════════════════════════════════════ -->
 <div id="preloader" aria-hidden="true">
-  <svg class="preloader-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path class="preloader-path" d="M 48 18 C 48 14 44 10 32 10 C 20 10 16 16 16 22 C 16 34 48 30 48 42 C 48 48 44 54 32 54 C 20 54 16 50 16 46"
-      stroke="#c4963a" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-  </svg>
-  <div class="preloader-wordmark" id="preloader-wordmark"></div>
-  <div class="preloader-bar-wrap">
-    <div class="preloader-bar" id="preloader-bar"></div>
+  <div id="preloader-inner">
+    <video id="preloader-video" class="preloader-mark"
+      src="Videologoschatten.mp4"
+      muted preload="auto" playsinline
+      style="object-fit: contain; display: block;">
+    </video>
+    <div class="preloader-bar-wrap">
+      <div class="preloader-bar" id="preloader-bar"></div>
+    </div>
   </div>
 </div>
 
@@ -2430,7 +2441,12 @@ footer {
      NAVIGATION
 ════════════════════════════════════════════ -->
 <nav id="nav">
-  <a href="#hero" class="nav-logo">Schatten</a>
+  <a href="#hero" class="nav-logo">
+    <span style="position:relative;display:inline-block;line-height:0;">
+      <canvas id="nav-logo-canvas" style="height:110px;width:auto;display:block;pointer-events:none;background:#000000;"></canvas>
+    </span>
+    <span style="margin-left:-7rem;position:relative;z-index:2;">Schatten</span>
+  </a>
   <ul class="nav-links">
     <li><a href="#solution">Approach</a></li>
     <li><a href="#offer">System</a></li>
@@ -3448,14 +3464,6 @@ function splitIntoChars(el) {
 (function initPreloader() {
   document.body.style.overflow = 'hidden';
 
-  // Render wordmark
-  const wordmark = document.getElementById('preloader-wordmark');
-  'SCHATTEN'.split('').forEach(c => {
-    const s = document.createElement('span');
-    s.className = 'preloader-char';
-    s.textContent = c;
-    wordmark.appendChild(s);
-  });
 
   function dismissPreloader() {
     gsap.to('#preloader', {
@@ -3477,10 +3485,14 @@ function splitIntoChars(el) {
   var preloaderAnimDone = false;
   var katanaFramesDone  = false;
   var preloaderDismissed = false;
+  var minTimeDone = false;
+
+  // Enforce minimum 5-second loading screen regardless of connection speed
+  setTimeout(function() { minTimeDone = true; tryDismiss(); }, 5000);
 
   function tryDismiss() {
     if (preloaderDismissed) return;
-    if (preloaderAnimDone && katanaFramesDone) {
+    if (preloaderAnimDone && katanaFramesDone && minTimeDone) {
       preloaderDismissed = true;
       dismissPreloader();
     }
@@ -3504,19 +3516,23 @@ function splitIntoChars(el) {
     }
   });
 
-  tl
-    .to('.preloader-path', {
-      strokeDashoffset: 0,
-      duration: 1.4,
-      ease: 'power2.inOut'
-    })
-    .to('.preloader-char', {
-      y: 0, opacity: 1,
-      stagger: 0.05,
-      duration: 0.5,
-      ease: 'power2.out'
-    }, '-=0.6')
-    .to({}, { duration: 0.35 }); // hold — bar is driven by real frame-load progress
+  // Drive bar proportionally across the 5-second minimum
+  var barProxy = { p: 0 };
+  gsap.to(barProxy, {
+    p: 1,
+    duration: 5,
+    ease: 'power1.inOut',
+    onUpdate: function() {
+      var bar = document.getElementById('preloader-bar');
+      if (bar) bar.style.width = Math.round(barProxy.p * 100) + '%';
+      var vid = document.getElementById('preloader-video');
+      if (vid && vid.readyState >= 2 && vid.duration) {
+        vid.currentTime = barProxy.p * vid.duration;
+      }
+    }
+  });
+
+  tl.to({}, { duration: 0.01, onComplete: function() {} }); // keep timeline alive for onComplete
 })();
 
 /* ── LENIS SMOOTH SCROLL ───────────────────── */
@@ -4471,9 +4487,7 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   var isLoaded    = false;
 
   function onFrameLoadProgress(p) {
-    // Drive the existing preloader bar with real load progress
-    var bar = document.getElementById('preloader-bar');
-    if (bar) bar.style.width = Math.round(p * 100) + '%';
+    // Bar and video are now driven by the 5-second timer in the preloader — no-op here
   }
 
   // ── Concurrent frame loader ─────────────────────────────────────────────────
@@ -5098,6 +5112,81 @@ document.querySelectorAll('.eyebrow').forEach(el => {
     }
   }, { threshold: 0.01 });
   obsO.observe(section || canvas);
+}());
+</script>
+
+<script>
+/* ── Nav logo — frame sequence scroll scrub (same pattern as katana) ── */
+(function() {
+  var canvas = document.getElementById('nav-logo-canvas');
+  if (!canvas) return;
+
+  var TOTAL       = 240;
+  var CONCURRENCY = 6;
+  var BASE        = 'nav-logo-frames/';
+  var LERP        = 0.08;
+
+  var dpr = window.devicePixelRatio || 1;
+  canvas.width  = Math.round(195 * dpr * (16/9));
+  canvas.height = Math.round(110 * dpr);
+
+  var frameCache  = new Map();
+  var loadedCount = 0;
+  var isLoaded    = false;
+
+  function loadFrames() {
+    var index = 0;
+    function worker() {
+      if (index >= TOTAL) return;
+      var i   = index++;
+      var num = String(i).padStart(4, '0');
+      var img = new Image();
+      img.onload = function() {
+        frameCache.set(i, img);
+        loadedCount++;
+        if (loadedCount === TOTAL) { isLoaded = true; }
+        worker();
+      };
+      img.onerror = function() { loadedCount++; worker(); };
+      img.src = BASE + num + '.webp';
+    }
+    for (var w = 0; w < CONCURRENCY; w++) worker();
+  }
+  loadFrames();
+
+  function drawFrame(img) {
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (!img) return;
+    var sw = img.naturalWidth, sh = img.naturalHeight;
+    if (!sw || !sh) return;
+    var scale = Math.max(canvas.width / sw, canvas.height / sh);
+    var dw = sw * scale, dh = sh * scale;
+    var dx = (canvas.width  - dw) / 2;
+    var dy = (canvas.height - dh) / 2;
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  var rawP    = 0;
+  var smoothP = 0;
+
+  function attachLenis() {
+    if (typeof lenis !== 'undefined' && lenis) {
+      lenis.on('scroll', function(e) { rawP = e.progress; });
+    } else {
+      setTimeout(attachLenis, 100);
+    }
+  }
+  attachLenis();
+
+  (function render() {
+    requestAnimationFrame(render);
+    smoothP += (rawP - smoothP) * LERP;
+    var idx   = Math.min(Math.round(smoothP * (TOTAL - 1)), TOTAL - 1);
+    var frame = frameCache.get(idx);
+    if (frame) drawFrame(frame);
+  })();
 }());
 </script>
 </body>
