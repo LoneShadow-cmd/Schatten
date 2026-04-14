@@ -3562,8 +3562,17 @@ function splitIntoChars(el) {
       var bar = document.getElementById('preloader-bar');
       if (bar) bar.style.width = Math.round(barProxy.p * 100) + '%';
       if (plCanvas && plLoaded > 0) {
-        var idx = Math.min(Math.round(barProxy.p * (PL_TOTAL - 1)), PL_TOTAL - 1);
-        var frame = plCache.get(idx) || plCache.get(0);
+        // Only animate through first 90 frames (logo visible zone), then hold at 65
+        var PL_END = 90;
+        var idx = Math.min(Math.round(barProxy.p * (PL_END - 1)), PL_END - 1);
+        // Find nearest loaded frame
+        var frame = plCache.get(idx);
+        if (!frame) {
+          for (var d = 1; d < 30 && !frame; d++) {
+            frame = plCache.get(Math.max(0, idx - d)) || plCache.get(Math.min(PL_END - 1, idx + d));
+          }
+        }
+        if (!frame) frame = plCache.get(65); // fallback to peak frame
         if (frame) plDraw(frame);
       }
     }
@@ -5162,7 +5171,7 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   var CONCURRENCY = 6;
   var BASE        = './nav-logo-frames/';
   var LERP        = 0.08;
-  var REST_FRAME  = 119; // middle frame — logo fully visible at rest
+  var REST_FRAME  = 65; // peak brightness frame — logo fully visible
 
   var dpr = window.devicePixelRatio || 1;
   canvas.width  = Math.round(195 * dpr * (16/9));
@@ -5228,6 +5237,12 @@ document.querySelectorAll('.eyebrow').forEach(el => {
       ? REST_FRAME
       : Math.min(Math.round(smoothP * (TOTAL - 1)), TOTAL - 1);
     var frame = frameCache.get(idx);
+    // Fallback: find nearest loaded frame if exact one isn't cached yet
+    if (!frame) {
+      for (var d = 1; d < 30 && !frame; d++) {
+        frame = frameCache.get(Math.max(0, idx - d)) || frameCache.get(Math.min(TOTAL - 1, idx + d));
+      }
+    }
     if (frame) drawFrame(frame);
   })();
 }());
