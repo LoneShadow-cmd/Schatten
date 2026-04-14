@@ -3462,6 +3462,7 @@ function splitIntoChars(el) {
 
 
   function dismissPreloader() {
+    if (window._stopPlLoop) window._stopPlLoop();
     gsap.to('#preloader', {
       opacity: 0, duration: 0.6, ease: 'power2.inOut',
       onComplete() {
@@ -3513,70 +3514,68 @@ function splitIntoChars(el) {
   });
 
   // ── Preloader frame sequence ──────────────────────────────────────────────
-  var PL_TOTAL  = 240;
-  var PL_BASE   = './nav-logo-frames/';
-  var plCache   = new Map();
-  var plLoaded  = 0;
-  var plCanvas  = document.getElementById('preloader-canvas');
+  var PL_TOTAL = 90;   // only load frames 0-89 (logo reveal zone, peak at ~75)
+  var PL_BASE  = 'nav-logo-frames/';
+  var plCache  = new Map();
+  var plCanvas = document.getElementById('preloader-canvas');
 
   if (plCanvas) {
-    var plDpr = window.devicePixelRatio || 1;
-    plCanvas.width  = Math.round(plCanvas.offsetWidth  * plDpr) || Math.round(600 * plDpr);
-    plCanvas.height = Math.round(plCanvas.offsetHeight * plDpr) || Math.round(600 * plDpr);
+    plCanvas.width  = 600;
+    plCanvas.height = 600;
 
     function plDraw(img) {
       var ctx = plCanvas.getContext('2d');
       ctx.fillStyle = '#060606';
-      ctx.fillRect(0, 0, plCanvas.width, plCanvas.height);
+      ctx.fillRect(0, 0, 600, 600);
       if (!img) return;
       var sw = img.naturalWidth, sh = img.naturalHeight;
       if (!sw || !sh) return;
-      var scale = Math.min(plCanvas.width / sw, plCanvas.height / sh);
+      var scale = Math.min(600 / sw, 600 / sh);
       var dw = sw * scale, dh = sh * scale;
-      ctx.drawImage(img, (plCanvas.width - dw) / 2, (plCanvas.height - dh) / 2, dw, dh);
+      ctx.drawImage(img, (600 - dw) / 2, (600 - dh) / 2, dw, dh);
     }
 
-    // Load all frames concurrently
-    (function loadPl() {
+    // Load frames 0-89 with high concurrency
+    (function() {
       var idx = 0;
       function worker() {
         if (idx >= PL_TOTAL) return;
         var i = idx++, num = String(i).padStart(4, '0');
         var img = new Image();
-        img.onload = function() { plCache.set(i, img); plLoaded++; worker(); };
-        img.onerror = function() { plLoaded++; worker(); };
+        img.onload = function() { plCache.set(i, img); worker(); };
+        img.onerror = function() { worker(); };
         img.src = PL_BASE + num + '.webp';
       }
-      for (var w = 0; w < 8; w++) worker();
+      for (var w = 0; w < 10; w++) worker();
     })();
-  }
 
-  // Drive bar + canvas proportionally across the 5-second minimum
-  var barProxy = { p: 0 };
+    // RAF loop — runs every frame, independent of GSAP and network timing
+    var plStart = performance.now();
+    var PL_DURATION = 5000;
+    var plActive = true;
 
-  gsap.to(barProxy, {
-    p: 1,
-    duration: 5,
-    ease: 'power1.inOut',
-    onUpdate: function() {
+    (function plLoop() {
+      if (!plActive) return;
+      requestAnimationFrame(plLoop);
+
+      var p   = Math.min((performance.now() - plStart) / PL_DURATION, 1);
       var bar = document.getElementById('preloader-bar');
-      if (bar) bar.style.width = Math.round(barProxy.p * 100) + '%';
-      if (plCanvas && plLoaded > 0) {
-        // Only animate through first 90 frames (logo visible zone), then hold at 65
-        var PL_END = 90;
-        var idx = Math.min(Math.round(barProxy.p * (PL_END - 1)), PL_END - 1);
-        // Find nearest loaded frame
-        var frame = plCache.get(idx);
-        if (!frame) {
-          for (var d = 1; d < 30 && !frame; d++) {
-            frame = plCache.get(Math.max(0, idx - d)) || plCache.get(Math.min(PL_END - 1, idx + d));
-          }
+      if (bar) bar.style.width = Math.round(p * 100) + '%';
+
+      var targetIdx = Math.round(p * (PL_TOTAL - 1));
+      var frame = plCache.get(targetIdx);
+      // Walk backwards to find nearest loaded frame
+      if (!frame) {
+        for (var d = 1; d <= targetIdx && !frame; d++) {
+          frame = plCache.get(targetIdx - d);
         }
-        if (!frame) frame = plCache.get(65); // fallback to peak frame
-        if (frame) plDraw(frame);
       }
-    }
-  });
+      if (frame) plDraw(frame);
+    })();
+
+    // Expose stop function so dismissPreloader can halt the RAF
+    window._stopPlLoop = function() { plActive = false; };
+  }
 
   tl.to({}, { duration: 0.01, onComplete: function() {} }); // keep timeline alive for onComplete
 })();
@@ -5171,7 +5170,7 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   var CONCURRENCY = 6;
   var BASE        = './nav-logo-frames/';
   var LERP        = 0.08;
-  var REST_FRAME  = 65; // peak brightness frame — logo fully visible
+  var REST_FRAME  = 75; // peak brightness frame — logo fully visible
 
   var dpr = window.devicePixelRatio || 1;
   canvas.width  = Math.round(195 * dpr * (16/9));
