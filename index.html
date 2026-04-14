@@ -2444,7 +2444,7 @@ footer {
         style="height:110px;width:auto;display:block;object-fit:contain;pointer-events:none;"
         src="Videologoschatten.mp4"></video>
     </span>
-    <span style="margin-left:-4rem;position:relative;z-index:2;">Schatten</span>
+    <span style="margin-left:-7rem;position:relative;z-index:2;">Schatten</span>
   </a>
   <ul class="nav-links">
     <li><a href="#solution">Approach</a></li>
@@ -3488,7 +3488,7 @@ function splitIntoChars(el) {
   var minTimeDone = false;
 
   // Enforce minimum 5-second loading screen regardless of connection speed
-  setTimeout(function() { minTimeDone = true; tryDismiss(); }, 8000);
+  setTimeout(function() { minTimeDone = true; tryDismiss(); }, 5000);
 
   function tryDismiss() {
     if (preloaderDismissed) return;
@@ -3518,7 +3518,7 @@ function splitIntoChars(el) {
 
   // ── Preloader progress bar — driven by simple timer ──────────────────────
   var plStart    = performance.now();
-  var PL_DURATION = 8000;
+  var PL_DURATION = 5000;
   var plActive   = true;
 
   (function plLoop() {
@@ -3609,14 +3609,17 @@ function initLenis() {
   })();
 })();
 
-/* ── SCROLL PROGRESS + NAV COMPACT ─────────── */
+/* ── SCROLL PROGRESS ───────────────────────── */
 const progressEl = document.getElementById('scroll-progress');
-const navEl      = document.getElementById('nav');
 window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  const maxScroll = document.body.scrollHeight - window.innerHeight;
-  if (progressEl) progressEl.style.width = (scrollY / maxScroll * 100) + '%';
-  if (navEl) navEl.classList.toggle('compact', scrollY > 80);
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  progressEl.style.width = pct + '%';
+}, { passive: true });
+
+/* ── NAV COMPACT ───────────────────────────── */
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('compact', window.scrollY > 80);
 }, { passive: true });
 
 /* ── MOBILE MENU ───────────────────────────── */
@@ -3658,6 +3661,7 @@ function initHeroAnimation() {
       duration: 0.75,
       ease: 'power3.out'
     }, '-=0.35')
+    .from('#hero-body', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.45')
     .from('#hero-qualifier', { y: 16, opacity: 0, duration: 0.5, ease: 'power2.out' }, '-=0.4')
     .from('#hero-scarcity', { y: 12, opacity: 0, duration: 0.45, ease: 'power2.out' }, '-=0.35')
     .from('#hero-actions', { y: 16, opacity: 0, duration: 0.5, ease: 'power2.out' }, '-=0.3')
@@ -4417,12 +4421,7 @@ function initOrbitalTimeline() {
 
   // Init
   positionNodes();
-
-  // Only rotate when orbital section is visible
-  new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting) startRotation();
-    else { clearInterval(rotTimer); rotTimer = null; }
-  }, { threshold: 0.01 }).observe(stage);
+  startRotation();
 }
 
 /* ── TEXT SCRAMBLE on hover for eyebrows ───── */
@@ -4494,7 +4493,9 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   var total       = frameNumbers.length;
   var isLoaded    = false;
 
-
+  function onFrameLoadProgress(p) {
+    // Bar and video are now driven by the 5-second timer in the preloader — no-op here
+  }
 
   // ── Concurrent frame loader ─────────────────────────────────────────────────
   // Uses HTMLImageElement — works on file:// and http:// without CORS issues
@@ -4569,22 +4570,20 @@ document.querySelectorAll('.eyebrow').forEach(el => {
   }
 
   // ── rAF render loop ─────────────────────────────────────────────────────────
-  var katanaVisible = false;
-  new IntersectionObserver(function(entries) {
-    katanaVisible = entries[0].isIntersecting;
-  }, { threshold: 0.01 }).observe(canvas);
-
+  // Runs independently of scroll events — lerp syncs to browser paint cycle
   (function render() {
     requestAnimationFrame(render);
-    if (!isLoaded || !katanaVisible) return;
+    if (!isLoaded) return;
 
     var ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Adaptive lerp: catch up faster for large jumps (keyboard, Page Down)
     var dist   = Math.abs(rawProgress - smoothProgress);
     var factor = dist > 0.1 ? LERP_FACTOR * 2.5 : LERP_FACTOR;
     smoothProgress += (rawProgress - smoothProgress) * factor;
 
+    // Map scroll progress → frame index
     var total2   = frameNumbers.length;
     var idx      = Math.min(Math.floor(smoothProgress * (total2 - 1)), total2 - 1);
     var frameNum = frameNumbers[Math.max(0, idx)];
