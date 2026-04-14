@@ -2403,11 +2403,7 @@ footer {
 ════════════════════════════════════════════ -->
 <div id="preloader" aria-hidden="true">
   <div id="preloader-inner">
-    <video id="preloader-video" class="preloader-mark"
-      src="Videologoschatten.mp4"
-      muted preload="auto" playsinline
-      style="object-fit: contain; display: block;">
-    </video>
+    <canvas id="preloader-canvas" class="preloader-mark" style="display:block;"></canvas>
     <div class="preloader-bar-wrap">
       <div class="preloader-bar" id="preloader-bar"></div>
     </div>
@@ -3516,19 +3512,47 @@ function splitIntoChars(el) {
     }
   });
 
-  // Drive bar proportionally across the 5-second minimum
-  var barProxy = { p: 0 };
-  var vidReady = false;
-  var vidEl    = document.getElementById('preloader-video');
+  // ── Preloader frame sequence ──────────────────────────────────────────────
+  var PL_TOTAL  = 240;
+  var PL_BASE   = './nav-logo-frames/';
+  var plCache   = new Map();
+  var plLoaded  = 0;
+  var plCanvas  = document.getElementById('preloader-canvas');
 
-  if (vidEl) {
-    // When video becomes seekable, sync it to wherever the bar is
-    vidEl.addEventListener('canplay', function onCanPlay() {
-      vidEl.removeEventListener('canplay', onCanPlay);
-      vidReady = true;
-      if (vidEl.duration) vidEl.currentTime = barProxy.p * vidEl.duration;
-    });
+  if (plCanvas) {
+    var plDpr = window.devicePixelRatio || 1;
+    plCanvas.width  = Math.round(plCanvas.offsetWidth  * plDpr) || Math.round(600 * plDpr);
+    plCanvas.height = Math.round(plCanvas.offsetHeight * plDpr) || Math.round(600 * plDpr);
+
+    function plDraw(img) {
+      var ctx = plCanvas.getContext('2d');
+      ctx.fillStyle = '#060606';
+      ctx.fillRect(0, 0, plCanvas.width, plCanvas.height);
+      if (!img) return;
+      var sw = img.naturalWidth, sh = img.naturalHeight;
+      if (!sw || !sh) return;
+      var scale = Math.min(plCanvas.width / sw, plCanvas.height / sh);
+      var dw = sw * scale, dh = sh * scale;
+      ctx.drawImage(img, (plCanvas.width - dw) / 2, (plCanvas.height - dh) / 2, dw, dh);
+    }
+
+    // Load all frames concurrently
+    (function loadPl() {
+      var idx = 0;
+      function worker() {
+        if (idx >= PL_TOTAL) return;
+        var i = idx++, num = String(i).padStart(4, '0');
+        var img = new Image();
+        img.onload = function() { plCache.set(i, img); plLoaded++; worker(); };
+        img.onerror = function() { plLoaded++; worker(); };
+        img.src = PL_BASE + num + '.webp';
+      }
+      for (var w = 0; w < 8; w++) worker();
+    })();
   }
+
+  // Drive bar + canvas proportionally across the 5-second minimum
+  var barProxy = { p: 0 };
 
   gsap.to(barProxy, {
     p: 1,
@@ -3537,8 +3561,10 @@ function splitIntoChars(el) {
     onUpdate: function() {
       var bar = document.getElementById('preloader-bar');
       if (bar) bar.style.width = Math.round(barProxy.p * 100) + '%';
-      if (vidReady && vidEl && vidEl.duration) {
-        vidEl.currentTime = barProxy.p * vidEl.duration;
+      if (plCanvas && plLoaded > 0) {
+        var idx = Math.min(Math.round(barProxy.p * (PL_TOTAL - 1)), PL_TOTAL - 1);
+        var frame = plCache.get(idx) || plCache.get(0);
+        if (frame) plDraw(frame);
       }
     }
   });
